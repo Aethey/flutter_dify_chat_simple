@@ -8,7 +8,7 @@ void main() {
   // 在应用启动时直接初始化SDK，使用提供的API密钥
   ChatBotSdk.initialize(
     // 请替换为您在Dify.ai获取的实际API密钥
-    apiKey: 'app-vE1t1lVnqBzKxqmXSg1625L8', // 使用占位符
+    apiKey: 'your_api_key', // 使用占位符
     // 使用正确的Dify API基础URL
     apiEndpoint: 'https://api.dify.ai/v1',
   );
