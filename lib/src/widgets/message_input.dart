@@ -70,7 +70,7 @@ class _MessageInputState extends State<MessageInput> {
         color: Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             offset: const Offset(0, -1),
             blurRadius: 5,
           ),
@@ -83,7 +83,7 @@ class _MessageInputState extends State<MessageInput> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceVariant,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(24.0),
               ),
               child: TextField(
@@ -93,7 +93,7 @@ class _MessageInputState extends State<MessageInput> {
                   hintText: widget.hintText ?? 'Type a message...',
                   border: InputBorder.none,
                   hintStyle: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.7),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
                   ),
                 ),
                 style: TextStyle(
@@ -120,13 +120,14 @@ class _MessageInputState extends State<MessageInput> {
                 style: ElevatedButton.styleFrom(
                   shape: const CircleBorder(),
                   padding: const EdgeInsets.all(12.0),
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  foregroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                   elevation: 0,
                 ),
                 child: Icon(
                   widget.isLoading ? Icons.hourglass_empty : Icons.send,
-                  size: 20.0,
+                  color: Theme.of(context).colorScheme.onSurface,
+                  size: 24.0,
                 ),
               ),
             ),

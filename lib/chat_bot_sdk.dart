@@ -46,25 +46,23 @@ class ChatBotSdk {
     // Verify SDK is initialized
     if (!SdkConfig.instance.isInitialized) {
       throw Exception('ChatBotSdk is not initialized. Call ChatBotSdk.initialize() first.');
-    }
-
-    print('Starting chat with API: ${SdkConfig.instance.apiEndpoint}');
-    
+    }    
     // Launch the chat page
     await Navigator.of(context).push(
-      MaterialPageRoute(
+       MaterialPageRoute(
         builder: (context) => ProviderScope(
-          child: MaterialApp(
-            title: 'Chat Bot SDK',
-            theme: themeData ?? Theme.of(context),
-            locale: locale,
-            supportedLocales: ChatBotLocalizationsSetup.supportedLocales,
-            localizationsDelegates: ChatBotLocalizationsSetup.localizationsDelegates,
-            localeResolutionCallback: ChatBotLocalizationsSetup.localeResolutionCallback,
-            home: ChatPage(
-              title: title,
-              initialMessage: initialMessage,
-              themeData: themeData,
+          child: Builder(
+            builder: (context) => Localizations(
+              locale: locale ?? Localizations.localeOf(context),
+              delegates: ChatBotLocalizationsSetup.localizationsDelegates,
+              child: Theme(
+                data: themeData ?? Theme.of(context),
+                child: ChatPage(
+                  title: title,
+                  initialMessage: initialMessage,
+                  themeData: themeData ?? Theme.of(context),
+                ),
+              ),
             ),
           ),
         ),

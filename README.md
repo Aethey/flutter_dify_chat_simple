@@ -1,15 +1,14 @@
 # Flutter Dify Chat Simple
 
+<p float="left">
+  <img src="image/Simulator Screenshot - iPhone 16 Pro Max - 2025-03-05 at 15.24.53.png" width="300" />
+  <img src="image/Simulator Screenshot - iPhone 16 Pro Max - 2025-03-05 at 15.26.15.png" width="300" />
+</p>
+
 <details open>
 <summary>English</summary>
 
 A simple Flutter SDK for integration with [Dify.ai](https://dify.ai) Chat API.
-
-## Features
-- Easy initialization and chat interface
-- Streaming responses (typewriter effect)
-- Clean single-page UI
-- Full Dify.ai API compatibility
 
 ## Installation
 Add to your `pubspec.yaml`:
@@ -59,12 +58,6 @@ ChatBotSdk.startChat(
 
 一个用于集成 [Dify.ai](https://dify.ai) 聊天 API 的简易 Flutter SDK。
 
-## 特性
-- 简单的初始化和聊天界面
-- 流式响应（打字机效果）
-- 整洁的单页 UI
-- 完全兼容 Dify.ai API
-
 ## 安装
 添加到 `pubspec.yaml`:
 ```yaml
@@ -112,12 +105,6 @@ ChatBotSdk.startChat(
 <summary>日本語</summary>
 
 [Dify.ai](https://dify.ai) チャット API と統合するためのシンプルな Flutter SDK。
-
-## 特徴
-- 簡単な初期化とチャットインターフェース
-- ストリーミングレスポンス（タイプライター効果）
-- クリーンな単一ページ UI
-- Dify.ai API との完全な互換性
 
 ## インストール
 `pubspec.yaml` に追加:

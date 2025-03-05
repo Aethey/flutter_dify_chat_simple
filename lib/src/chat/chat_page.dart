@@ -63,15 +63,15 @@ class ChatPage extends ConsumerWidget {
         appBar: AppBar(
           title: Text(title ?? context.l10n.chatTitle),
           elevation: 1,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: chatState.isLoading 
-                  ? null 
-                  : () => _showResetConfirmation(context, chatNotifier),
-              tooltip: context.l10n.resetChat,
+            leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.black,
             ),
-          ],
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
         ),
         body: Column(
           children: [
@@ -153,30 +153,4 @@ class ChatPage extends ConsumerWidget {
     );
   }
   
-  Future<void> _showResetConfirmation(
-    BuildContext context, 
-    ChatNotifier chatNotifier,
-  ) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.resetChat),
-        content: Text(context.l10n.resetChatConfirmation),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(context.l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(context.l10n.reset),
-          ),
-        ],
-      ),
-    );
-    
-    if (confirmed == true) {
-      chatNotifier.clearChat();
-    }
-  }
 } 
