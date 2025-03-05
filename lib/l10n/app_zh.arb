@@ -1,0 +1,51 @@
+{
+  "@@locale": "zh",
+  
+  "appTitle": "聊天机器人SDK",
+  "chatTitle": "聊天助手",
+  "initialMessage": "您好！今天我能为您做什么？",
+  
+  "resetChat": "重置聊天",
+  "resetChatConfirmation": "这将清除整个聊天历史记录。继续吗？",
+  "cancel": "取消",
+  "reset": "重置",
+  
+  "typeMessage": "输入消息...",
+  "startConversation": "开始对话",
+  "typeToBegin": "输入消息开始对话",
+  
+  "errorTitle": "发生错误",
+  "genericError": "出了点问题。请重试。",
+  "networkError": "网络错误: {message}",
+  "networkErrorDesc": "网络错误。请检查您的连接。",
+  "retry": "重试",
+  
+  "connectionTimeout": "连接超时：无法连接到服务器",
+  "receiveTimeout": "接收超时：无法从服务器接收响应",
+  "sendTimeout": "发送超时：无法发送请求",
+  "connectionError": "连接错误：请检查您的互联网连接",
+  "requestCancelled": "请求已取消",
+  "serverError": "服务器错误 (HTTP {statusCode}): {message}",
+  
+  "@serverError": {
+    "placeholders": {
+      "statusCode": {
+        "type": "String",
+        "example": "404"
+      },
+      "message": {
+        "type": "String",
+        "example": "Not found"
+      }
+    }
+  },
+  
+  "@networkError": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Connection refused"
+      }
+    }
+  }
+} 

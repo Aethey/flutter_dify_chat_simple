@@ -1,0 +1,25 @@
+name: chat_bot_sdk_example
+description: Example application for ChatBot SDK
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`.
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  chat_bot_sdk:
+    path: ../  # 本地依赖，指向SDK根目录
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true 

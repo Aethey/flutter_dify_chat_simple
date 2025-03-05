@@ -1,0 +1,51 @@
+{
+  "@@locale": "en",
+  
+  "appTitle": "Chat Bot SDK",
+  "chatTitle": "Chat Assistant",
+  "initialMessage": "Hello! How can I help you today?",
+  
+  "resetChat": "Reset chat",
+  "resetChatConfirmation": "This will clear the entire chat history. Continue?",
+  "cancel": "CANCEL",
+  "reset": "RESET",
+  
+  "typeMessage": "Type a message...",
+  "startConversation": "Start a conversation",
+  "typeToBegin": "Type a message to begin",
+  
+  "errorTitle": "An error occurred",
+  "genericError": "Something went wrong. Please try again.",
+  "networkError": "Network error: {message}",
+  "networkErrorDesc": "Network error. Please check your connection.",
+  "retry": "Retry",
+  
+  "connectionTimeout": "Connection timeout: Could not connect to the server",
+  "receiveTimeout": "Receive timeout: Failed to receive response from server",
+  "sendTimeout": "Send timeout: Failed to send request",
+  "connectionError": "Connection error: Please check your internet connection",
+  "requestCancelled": "Request was cancelled",
+  "serverError": "Server error (HTTP {statusCode}): {message}",
+  
+  "@serverError": {
+    "placeholders": {
+      "statusCode": {
+        "type": "String",
+        "example": "404"
+      },
+      "message": {
+        "type": "String",
+        "example": "Not found"
+      }
+    }
+  },
+  
+  "@networkError": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Connection refused"
+      }
+    }
+  }
+} 
