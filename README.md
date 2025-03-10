@@ -1,8 +1,8 @@
 # Flutter Dify Chat Simple
 
 <p float="left">
-  <img src="image/Simulator Screenshot - iPhone 16 Pro Max - 2025-03-05 at 15.24.53.png" width="300" />
-  <img src="image/Simulator Screenshot - iPhone 16 Pro Max - 2025-03-05 at 15.26.15.png" width="300" />
+  <img src="image/image1.png" width="300" />
+  <img src="image/image2.png" width="300" />
 </p>
 
 <details open>
