@@ -22,6 +22,9 @@ class ChatPage extends ConsumerWidget {
   /// Optional custom widget to display when the bot is thinking
   final Widget? thinkingWidget;
   
+  /// Optional custom widget to display when the chat is empty
+  final Widget? emptyWidget;
+  
   /// Constructor
   const ChatPage({
     super.key,
@@ -29,6 +32,7 @@ class ChatPage extends ConsumerWidget {
     this.initialMessage,
     this.themeData,
     this.thinkingWidget,
+    this.emptyWidget,
   });
 
   @override
@@ -85,7 +89,7 @@ class ChatPage extends ConsumerWidget {
             // Chat messages list
             Expanded(
               child: chatState.chatHistory.messages.isEmpty
-                  ? _buildEmptyState(context)
+                  ? (emptyWidget ?? _buildEmptyState(context))
                   : _buildChatList(context, chatState),
             ),
             

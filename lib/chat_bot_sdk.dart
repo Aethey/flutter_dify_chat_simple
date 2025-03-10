@@ -44,6 +44,7 @@ class ChatBotSdk {
     ThemeData? themeData,
     Locale? locale,
     Widget? thinkingWidget,
+    Widget? emptyWidget,
   }) async {
     // Verify SDK is initialized
     if (!SdkConfig.instance.isInitialized) {
