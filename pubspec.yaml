@@ -17,9 +17,7 @@ dependencies:
   flutter_markdown: ^0.6.18
   uuid: ^4.2.2
   intl: ^0.19.0
-  flutter_spinkit: ^5.2.0
   cached_network_image: ^3.3.1
-  flutter_svg: ^2.0.9
   url_launcher: ^6.2.4
 
 dev_dependencies:
@@ -30,6 +28,3 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
-  assets:
-    - lib/assets/images/
-    - lib/assets/icons/ 

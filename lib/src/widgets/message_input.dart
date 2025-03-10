@@ -1,3 +1,4 @@
+import 'package:chat_bot_sdk/custom/color.dart';
 import 'package:flutter/material.dart';
 
 /// A widget for message input with a send button
@@ -67,7 +68,7 @@ class _MessageInputState extends State<MessageInput> {
         top: 16.0,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: Colors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -75,17 +76,21 @@ class _MessageInputState extends State<MessageInput> {
             blurRadius: 5,
           ),
         ],
+        borderRadius: BorderRadius.circular(24.0),
+      
       ),
       child: Row(
         children: [
           // Text input field
           Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(24.0),
-              ),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  // decoration: BoxDecoration(
+                  //   color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  //   borderRadius: BorderRadius.circular(24.0),
+                  // ),
               child: TextField(
                 controller: _textController,
                 focusNode: _focusNode,
@@ -96,6 +101,7 @@ class _MessageInputState extends State<MessageInput> {
                     color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
                   ),
                 ),
+                cursorColor: customColor1,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
@@ -107,31 +113,31 @@ class _MessageInputState extends State<MessageInput> {
                 onSubmitted: (_) => _handleSendMessage(),
               ),
             ),
-          ),
-          
-          // Send button
-          AnimatedOpacity(
+             Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                AnimatedOpacity(
             opacity: _showSendButton && !widget.isLoading ? 1.0 : 0.5,
             duration: const Duration(milliseconds: 200),
-            child: Container(
-              margin: const EdgeInsets.only(left: 8.0),
-              child: ElevatedButton(
-                onPressed: widget.isLoading ? null : _handleSendMessage,
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(12.0),
-                  backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  foregroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  elevation: 0,
-                ),
-                child: Icon(
-                  widget.isLoading ? Icons.hourglass_empty : Icons.send,
-                  color: Theme.of(context).colorScheme.onSurface,
-                  size: 24.0,
-                ),
+            child: ElevatedButton(
+              onPressed: widget.isLoading ? null : _handleSendMessage,
+              style: ElevatedButton.styleFrom(
+                shape: const CircleBorder(),
+                backgroundColor: customColor0,
+                foregroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                elevation: 5,
+              ),
+              child: Icon(
+                widget.isLoading ? Icons.hourglass_empty : Icons.arrow_upward,
+                color: Colors.white,
+                size: 24.0,
               ),
             ),
+          )
+              ],
+             ),]),
           ),
+    
         ],
       ),
     );

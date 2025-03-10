@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../models/message.dart';
 
 /// A widget to display a chat message bubble
@@ -10,10 +8,18 @@ class MessageBubble extends StatelessWidget {
   /// The message to display
   final ChatMessage message;
   
+  /// Optional custom widget to display when the bot is thinking
+  final Widget? thinkingWidget;
+  
+  /// Optional custom widget to display when the message is loading/streaming
+  final Widget? loadingWidget;
+  
   /// Constructor
   const MessageBubble({
     super.key,
     required this.message,
+    this.thinkingWidget,
+    this.loadingWidget,
   });
 
   @override
@@ -28,100 +34,121 @@ class MessageBubble extends StatelessWidget {
         ),
         margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         padding: const EdgeInsets.all(12.0),
-        decoration: BoxDecoration(
-          color: isUser 
-              ? Theme.of(context).colorScheme.primary 
-              : Theme.of(context).colorScheme.surfaceVariant,
-          borderRadius: BorderRadius.circular(16.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 5,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Message content
-            _buildMessageContent(context),
-            
-            // Loading indicator or timestamp
-            if (message.status == MessageStatus.streaming || 
-                message.status == MessageStatus.sending)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: SpinKitThreeBounce(
-                  color: isUser 
-                      ? Colors.white70 
-                      : Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5),
-                  size: 16,
-                ),
-              )
-            else
-              Padding(
-                padding: const EdgeInsets.only(top: 4.0),
-                child: Text(
-                  _formatTimestamp(message.timestamp),
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: isUser 
-                        ? Colors.white70 
-                        : Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.7),
+        decoration: isUser 
+            ? BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(16.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 5,
+                    offset: const Offset(0, 2),
                   ),
-                ),
-              ),
-          ],
-        ),
+                ],
+              )
+            : null, // No decoration for AI messages to blend with background
+        child: _buildContentWithStatus(context),
       ),
     );
   }
   
-  Widget _buildMessageContent(BuildContext context) {
-    final isUser = message.role == MessageRole.user;
-    
+  Widget _buildContentWithStatus(BuildContext context) {
+    final isUser = message.role == MessageRole.user;   
     if (isUser) {
-      return Text(
-        message.content,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-        ),
+      // For user messages: text + timestamp
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            message.content,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+            ),
+          ),
+        ],
       );
     } else {
-      // Use Markdown for bot messages
-      return MarkdownBody(
-        data: message.content.isEmpty 
-            ? '_Thinking..._' 
-            : message.content,
-        styleSheet: MarkdownStyleSheet(
-          p: TextStyle(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-            fontSize: 16,
-          ),
-          code: TextStyle(
-            backgroundColor: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-            fontSize: 14,
-          ),
-          codeblockDecoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        onTapLink: (text, href, title) {
-          if (href != null) {
-            _launchUrl(href);
-          }
-        },
-      );
+      // For AI messages
+      if ((message.status == MessageStatus.streaming || message.status == MessageStatus.sending) && 
+          message.content.isEmpty && thinkingWidget != null) {
+        // Show custom thinking widget if in streaming/sending state and content is empty
+        return thinkingWidget!;
+      } else if (message.status == MessageStatus.streaming || message.status == MessageStatus.sending) {
+        // For messages being streamed/sent
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Message content (or "Thinking..." placeholder)
+            MarkdownBody(
+              data: message.content.isEmpty 
+                  ? '_Thinking..._' 
+                  : message.content,
+              styleSheet: MarkdownStyleSheet(
+                p: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                ),
+                code: TextStyle(
+                  backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontSize: 14,
+                ),
+                codeblockDecoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              onTapLink: (text, href, title) {
+                if (href != null) {
+                  _launchUrl(href);
+                }
+              },
+            ),
+            // Loading indicator - use custom if provided, otherwise use default
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: loadingWidget ?? const Text('Loaidng...'),
+            ),
+          ],
+        );
+      } else {
+        // For completed AI messages
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            MarkdownBody(
+              data: message.content,
+              styleSheet: MarkdownStyleSheet(
+                p: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontSize: 16,
+                ),
+                code: TextStyle(
+                  backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontSize: 14,
+                ),
+                codeblockDecoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              onTapLink: (text, href, title) {
+                if (href != null) {
+                  _launchUrl(href);
+                }
+              },
+            ),
+          ],
+        );
+      }
     }
   }
   
-  String _formatTimestamp(DateTime timestamp) {
-    return '${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}';
-  }
   
   Future<void> _launchUrl(String url) async {
     final uri = Uri.parse(url);

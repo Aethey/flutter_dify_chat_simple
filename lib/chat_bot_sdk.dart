@@ -36,12 +36,14 @@ class ChatBotSdk {
   /// [initialMessage] - Optional initial bot message
   /// [themeData] - Optional custom theme
   /// [locale] - Optional locale for localization (defaults to system locale)
+  /// [thinkingWidget] - Optional custom widget to display when the bot is thinking (replaces default "_Thinking..._" text)
   static Future<void> startChat({
     required BuildContext context,
     String? title,
     String? initialMessage,
     ThemeData? themeData,
     Locale? locale,
+    Widget? thinkingWidget,
   }) async {
     // Verify SDK is initialized
     if (!SdkConfig.instance.isInitialized) {
@@ -61,6 +63,7 @@ class ChatBotSdk {
                   title: title,
                   initialMessage: initialMessage,
                   themeData: themeData ?? Theme.of(context),
+                  thinkingWidget: thinkingWidget,
                 ),
               ),
             ),

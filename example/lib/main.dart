@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:chat_bot_sdk/chat_bot_sdk.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future<void> main() async {
   // Initialize Flutter binding
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Initialize SDK with API key
+  // Load environment variables
+  await dotenv.load();
+  
+  // Initialize SDK with environment variables
   ChatBotSdk.initialize(
-    // Replace with your actual Dify.ai API key
-    apiKey: 'your_api_key',
-    apiEndpoint: 'https://api.dify.ai/v1',
+    apiKey: dotenv.env['DIFY_API_KEY']!,
+    apiEndpoint: dotenv.env['DIFY_API_ENDPOINT']!,
   );
   
   runApp(const MyApp());
@@ -93,7 +96,7 @@ class ChatDemoHome extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'YOUR_DIFY_API_KEY',
+                      dotenv.env['DIFY_API_KEY'] ?? '[Not Set]',
                       style: TextStyle(
                         fontFamily: 'monospace',
                         color: Theme.of(context).colorScheme.primary,
@@ -126,7 +129,7 @@ class ChatDemoHome extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'https://api.dify.ai/v1',
+                          dotenv.env['DIFY_API_ENDPOINT'] ?? '[Not Set]',
                           style: TextStyle(
                             fontFamily: 'monospace',
                             fontSize: 12,
@@ -223,11 +226,34 @@ class ChatDemoHome extends StatelessWidget {
   }
 
   void _startChat(BuildContext context) {
+    // Example of using a custom thinking widget
+    final customThinkingWidget = Container(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // SpinKitThreeBounce(
+          //   color: Theme.of(context).colorScheme.primary,
+          //   size: 18,
+          // ),
+          const SizedBox(width: 8),
+          Text(
+            'AI is thinking...',
+            style: TextStyle(
+              fontStyle: FontStyle.italic,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        ],
+      ),
+    );
+
     ChatBotSdk.startChat(
       context: context,
       title: 'AI Assistant',
       initialMessage: 'Hello! I am an AI assistant. How can I help you today?',
       themeData: Theme.of(context), // Use current theme
+      thinkingWidget: customThinkingWidget, // Custom thinking widget
     );
   }
 } 

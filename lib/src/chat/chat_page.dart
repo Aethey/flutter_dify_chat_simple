@@ -1,3 +1,4 @@
+import 'package:chat_bot_sdk/custom/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,12 +19,16 @@ class ChatPage extends ConsumerWidget {
   /// Optional custom theme
   final ThemeData? themeData;
   
+  /// Optional custom widget to display when the bot is thinking
+  final Widget? thinkingWidget;
+  
   /// Constructor
   const ChatPage({
     super.key,
     this.title,
     this.initialMessage,
     this.themeData,
+    this.thinkingWidget,
   });
 
   @override
@@ -62,17 +67,19 @@ class ChatPage extends ConsumerWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(title ?? context.l10n.chatTitle),
+          backgroundColor: Colors.white,
           elevation: 1,
             leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
+            icon:  Icon(
+              Icons.arrow_back_ios,
+              color: customColor0,
             ),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
         ),
+        backgroundColor: Colors.grey[200],
         body: Column(
           children: [
             // Chat messages list
@@ -119,7 +126,10 @@ class ChatPage extends ConsumerWidget {
           return const SizedBox.shrink();
         }
         
-        return MessageBubble(message: message);
+        return MessageBubble(
+          message: message, 
+          thinkingWidget: thinkingWidget,
+        );
       },
     );
   }
@@ -132,7 +142,7 @@ class ChatPage extends ConsumerWidget {
           Icon(
             Icons.chat_bubble_outline,
             size: 64,
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
           ),
           const SizedBox(height: 16),
           Text(

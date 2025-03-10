@@ -14,7 +14,8 @@ dependencies:
   flutter:
     sdk: flutter
   chat_bot_sdk:
-    path: ../  # 本地依赖，指向SDK根目录
+    path: ../  
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -22,4 +23,6 @@ dev_dependencies:
   flutter_lints: ^2.0.0
 
 flutter:
-  uses-material-design: true 
+  uses-material-design: true
+  assets:
+    - .env 
