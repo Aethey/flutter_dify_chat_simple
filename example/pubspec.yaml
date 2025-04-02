@@ -16,6 +16,7 @@ dependencies:
   chat_bot_sdk:
     path: ../  
   flutter_dotenv: ^5.1.0
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:
