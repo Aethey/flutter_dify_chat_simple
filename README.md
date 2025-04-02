@@ -1,7 +1,7 @@
 # Flutter Dify Chat Simple
 
 ## Updates
-- **2023/04/02**: Added SharedPreferences storage for session persistence using conversationID
+- **2025/04/02**: Added SharedPreferences storage for session persistence using conversationID
 
 <p float="left">
   <img src="image/image1.png" width="300" />
