@@ -1,5 +1,8 @@
 # Flutter Dify Chat Simple
 
+## Updates
+- **2023/04/02**: Added SharedPreferences storage for session persistence using conversationID
+
 <p float="left">
   <img src="image/image1.png" width="300" />
   <img src="image/image2.png" width="300" />
@@ -89,6 +92,7 @@ If not provided, the default "_Thinking..._" text will be displayed.
 ## Dify API Setup
 1. Create a Dify.ai account and set up a chat application
 2. Get your API key: App → API Access → Copy API Key
+
 </details>
 
 <details>
