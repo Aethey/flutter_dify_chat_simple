@@ -253,7 +253,7 @@ class ChatDemoHome extends StatelessWidget {
       title: 'AI Assistant',
       initialMessage: 'Hello! I am an AI assistant. How can I help you today?',
       themeData: Theme.of(context), // Use current theme
-      thinkingWidget: customThinkingWidget, // Custom thinking widget
+      thinkingWidget: customThinkingWidget, userID: '1234567890', // Custom thinking widget
     );
   }
 } 
