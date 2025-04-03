@@ -30,6 +30,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get reset => 'リセット';
 
   @override
+  String get delete => '削除';
+
+  @override
   String get typeMessage => 'メッセージを入力...';
 
   @override
@@ -86,4 +89,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get noConversationHistory => '会話履歴がありません';
+
+  @override
+  String get loadingConversation => '会話を読み込み中...';
 }

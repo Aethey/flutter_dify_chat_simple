@@ -30,6 +30,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reset => 'RESET';
 
   @override
+  String get delete => 'DELETE';
+
+  @override
   String get typeMessage => 'Type a message...';
 
   @override
@@ -86,4 +89,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noConversationHistory => 'No conversation history';
+
+  @override
+  String get loadingConversation => 'Loading conversation...';
 }

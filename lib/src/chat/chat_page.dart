@@ -274,7 +274,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Loading conversation...',
+            context.l10n.loadingConversation,
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
                   color: customColor0,
                 ),

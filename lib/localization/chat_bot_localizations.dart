@@ -139,6 +139,12 @@ abstract class AppLocalizations {
   /// **'RESET'**
   String get reset;
 
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'DELETE'**
+  String get delete;
+
   /// No description provided for @typeMessage.
   ///
   /// In en, this message translates to:
@@ -246,6 +252,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No conversation history'**
   String get noConversationHistory;
+
+  /// No description provided for @loadingConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading conversation...'**
+  String get loadingConversation;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

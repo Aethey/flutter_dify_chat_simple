@@ -30,6 +30,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reset => '重置';
 
   @override
+  String get delete => '删除';
+
+  @override
   String get typeMessage => '输入消息...';
 
   @override
@@ -86,4 +89,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get noConversationHistory => '暂无对话历史';
+
+  @override
+  String get loadingConversation => '正在加载对话...';
 }

@@ -7,6 +7,7 @@
   "resetChatConfirmation": "This will clear the entire chat history. Continue?",
   "cancel": "CANCEL",
   "reset": "RESET",
+  "delete": "DELETE",
   "typeMessage": "Type a message...",
   "startConversation": "Start a conversation",
   "typeToBegin": "Type a message to begin",
@@ -25,6 +26,7 @@
   "logYesterday": "Yesterday",
   "conversationHistory": "Conversation History",
   "noConversationHistory": "No conversation history",
+  "loadingConversation": "Loading conversation...",
   "@serverError": {
     "placeholders": {
       "statusCode": {
