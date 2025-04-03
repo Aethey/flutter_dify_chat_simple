@@ -74,4 +74,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String serverError(String statusCode, String message) {
     return '服务器错误 (HTTP $statusCode): $message';
   }
+
+  @override
+  String get logToday => '今天';
+
+  @override
+  String get logYesterday => '昨天';
+
+  @override
+  String get conversationHistory => '对话历史';
+
+  @override
+  String get noConversationHistory => '暂无对话历史';
 }

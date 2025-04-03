@@ -2,6 +2,7 @@ import 'package:chat_bot_sdk/custom/color.dart';
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../localization/chat_bot_localizations.dart';
 import '../services/conversation_service.dart';
 
 /// A widget for message input with a send button
@@ -80,11 +81,16 @@ class _MessageInputState extends State<MessageInput> {
 
     if (!mounted) return;
 
+    // Get l10n from the current context before showing dialog
+    final l10n = context.l10n;
+
     showDialog(
       context: context,
       builder: (context) => ConversationHistoryDialog(
         conversations: conversations,
         userId: widget.userId,
+        l10n: l10n,
+        // Pass l10n from parent context
         onConversationSelected: (String conversationId) {
           Navigator.pop(context);
           widget.onSendMessage('', conversationId);
@@ -244,6 +250,7 @@ class ConversationHistoryDialog extends StatelessWidget {
   final String userId;
   final Function(String) onConversationSelected;
   final VoidCallback onNewConversation;
+  final AppLocalizations l10n; // Add l10n as a required field
 
   const ConversationHistoryDialog({
     super.key,
@@ -251,6 +258,7 @@ class ConversationHistoryDialog extends StatelessWidget {
     required this.userId,
     required this.onConversationSelected,
     required this.onNewConversation,
+    required this.l10n, // Make l10n required
   });
 
   Future<void> _deleteConversation(
@@ -291,7 +299,7 @@ class ConversationHistoryDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Conversation History',
+                    l10n.conversationHistory, // Use l10n for localized title
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           fontWeight: FontWeight.bold,
                           color: customColor0,
@@ -327,7 +335,8 @@ class ConversationHistoryDialog extends StatelessWidget {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'No conversation history',
+                            l10n.noConversationHistory,
+                            // Use l10n for empty state message
                             style: TextStyle(
                               color: Colors.grey[600],
                               fontSize: 16,
@@ -401,7 +410,7 @@ class ConversationHistoryDialog extends StatelessWidget {
               child: ElevatedButton.icon(
                 onPressed: onNewConversation,
                 icon: const Icon(Icons.add),
-                label: const Text('Start New Chat'),
+                label: Text(l10n.startConversation), // Use l10n for button text
                 style: ElevatedButton.styleFrom(
                   backgroundColor: customColor0,
                   foregroundColor: Colors.white,
@@ -425,30 +434,12 @@ class ConversationHistoryDialog extends StatelessWidget {
     final conversationDate = DateTime(date.year, date.month, date.day);
 
     if (conversationDate == today) {
-      return 'Today';
+      return l10n.logToday;
     } else if (conversationDate == yesterday) {
-      return 'Yesterday';
+      return l10n.logYesterday;
     } else {
       // Format as "Jun 15, 2023"
-      return '${_getMonthName(date.month)} ${date.day}, ${date.year}';
+      return '${date.month}/${date.day}, ${date.year}';
     }
-  }
-
-  String _getMonthName(int month) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
-    return months[month - 1];
   }
 }

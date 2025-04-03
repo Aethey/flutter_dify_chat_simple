@@ -222,6 +222,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Server error (HTTP {statusCode}): {message}'**
   String serverError(String statusCode, String message);
+
+  /// No description provided for @logToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get logToday;
+
+  /// No description provided for @logYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get logYesterday;
+
+  /// No description provided for @conversationHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation History'**
+  String get conversationHistory;
+
+  /// No description provided for @noConversationHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversation history'**
+  String get noConversationHistory;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

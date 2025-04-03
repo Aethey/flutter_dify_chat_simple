@@ -1,29 +1,28 @@
 {
   "@@locale": "ja",
-  
   "appTitle": "チャットボットSDK",
   "chatTitle": "チャットアシスタント",
   "initialMessage": "こんにちは！何かお手伝いできることはありますか？",
-  
   "resetChat": "チャットをリセット",
   "resetChatConfirmation": "チャット履歴がすべて消去されます。続行しますか？",
   "cancel": "キャンセル",
   "reset": "リセット",
-  
   "typeMessage": "メッセージを入力...",
   "startConversation": "会話を始めましょう",
   "typeToBegin": "メッセージを入力して始める",
-  
   "errorTitle": "エラーが発生しました",
   "genericError": "問題が発生しました。もう一度お試しください。",
   "networkError": "ネットワークエラー: {message}",
   "networkErrorDesc": "ネットワークエラー。接続を確認してください。",
   "retry": "再試行",
-  
   "connectionTimeout": "接続タイムアウト: サーバーに接続できませんでした",
   "receiveTimeout": "受信タイムアウト: サーバーからの応答を受信できませんでした",
   "sendTimeout": "送信タイムアウト: リクエストの送信に失敗しました",
   "connectionError": "接続エラー: インターネット接続を確認してください",
   "requestCancelled": "リクエストがキャンセルされました",
-  "serverError": "サーバーエラー (HTTP {statusCode}): {message}"
+  "serverError": "サーバーエラー (HTTP {statusCode}): {message}",
+  "logToday": "今日",
+  "logYesterday": "昨日",
+  "conversationHistory": "会話履歴",
+  "noConversationHistory": "会話履歴がありません"
 } 

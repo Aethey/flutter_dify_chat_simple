@@ -74,4 +74,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String serverError(String statusCode, String message) {
     return 'サーバーエラー (HTTP $statusCode): $message';
   }
+
+  @override
+  String get logToday => '今日';
+
+  @override
+  String get logYesterday => '昨日';
+
+  @override
+  String get conversationHistory => '会話履歴';
+
+  @override
+  String get noConversationHistory => '会話履歴がありません';
 }

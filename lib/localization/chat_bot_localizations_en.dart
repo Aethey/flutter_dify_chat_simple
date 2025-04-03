@@ -74,4 +74,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String serverError(String statusCode, String message) {
     return 'Server error (HTTP $statusCode): $message';
   }
+
+  @override
+  String get logToday => 'Today';
+
+  @override
+  String get logYesterday => 'Yesterday';
+
+  @override
+  String get conversationHistory => 'Conversation History';
+
+  @override
+  String get noConversationHistory => 'No conversation history';
 }
