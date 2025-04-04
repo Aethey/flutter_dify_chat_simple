@@ -34,7 +34,7 @@ class SdkConfig {
   void initialize({
     required String apiKey,
     required String apiEndpoint,
-    String? appId, // 保留参数但标记为可选，以保持兼容性
+    String? appId, 
     String? initialMessage,
   }) {
     _apiKey = apiKey;
