@@ -127,6 +127,12 @@ abstract class AppLocalizations {
   /// **'This will clear the entire chat history. Continue?'**
   String get resetChatConfirmation;
 
+  /// No description provided for @deleteChatConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this conversation history?'**
+  String get deleteChatConfirmation;
+
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:

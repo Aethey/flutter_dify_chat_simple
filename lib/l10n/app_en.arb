@@ -5,6 +5,7 @@
   "initialMessage": "Hello! How can I help you today?",
   "resetChat": "Reset chat",
   "resetChatConfirmation": "This will clear the entire chat history. Continue?",
+  "deleteChatConfirmation": "Are you sure you want to delete this conversation history?",
   "cancel": "CANCEL",
   "reset": "RESET",
   "delete": "DELETE",
@@ -47,4 +48,4 @@
       }
     }
   }
-} 
+}

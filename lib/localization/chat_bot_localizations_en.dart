@@ -24,6 +24,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resetChatConfirmation => 'This will clear the entire chat history. Continue?';
 
   @override
+  String get deleteChatConfirmation => 'Are you sure you want to delete this conversation history?';
+
+  @override
   String get cancel => 'CANCEL';
 
   @override

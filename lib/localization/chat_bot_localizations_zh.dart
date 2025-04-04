@@ -24,6 +24,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get resetChatConfirmation => '这将清除整个聊天历史记录。继续吗？';
 
   @override
+  String get deleteChatConfirmation => '确定要删除该对话历史吗？';
+
+  @override
   String get cancel => '取消';
 
   @override

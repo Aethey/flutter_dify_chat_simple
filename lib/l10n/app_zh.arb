@@ -5,6 +5,7 @@
   "initialMessage": "您好！今天我能为您做什么？",
   "resetChat": "重置聊天",
   "resetChatConfirmation": "这将清除整个聊天历史记录。继续吗？",
+  "deleteChatConfirmation": "确定要删除该对话历史吗？",
   "cancel": "取消",
   "reset": "重置",
   "delete": "删除",
@@ -27,4 +28,4 @@
   "logYesterday": "昨天",
   "conversationHistory": "对话历史",
   "noConversationHistory": "暂无对话历史"
-} 
+}

@@ -5,6 +5,7 @@
   "initialMessage": "こんにちは！何かお手伝いできることはありますか？",
   "resetChat": "チャットをリセット",
   "resetChatConfirmation": "チャット履歴がすべて消去されます。続行しますか？",
+  "deleteChatConfirmation": "この会話履歴を削除してもよろしいですか？",
   "cancel": "キャンセル",
   "reset": "リセット",
   "delete": "削除",
@@ -27,4 +28,4 @@
   "logYesterday": "昨日",
   "conversationHistory": "会話履歴",
   "noConversationHistory": "会話履歴がありません"
-} 
+}

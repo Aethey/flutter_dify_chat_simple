@@ -24,6 +24,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get resetChatConfirmation => 'チャット履歴がすべて消去されます。続行しますか？';
 
   @override
+  String get deleteChatConfirmation => 'この会話履歴を削除してもよろしいですか？';
+
+  @override
   String get cancel => 'キャンセル';
 
   @override
