@@ -165,7 +165,7 @@ class _MessageInputState extends State<MessageInput> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             offset: const Offset(0, -1),
             blurRadius: 5,
           ),
@@ -194,7 +194,7 @@ class _MessageInputState extends State<MessageInput> {
                   color: Theme.of(context)
                       .colorScheme
                       .onSurfaceVariant
-                      .withOpacity(0.7),
+                      .withValues(alpha: 0.7),
                 ),
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 4.0, vertical: 12.0),
@@ -223,9 +223,8 @@ class _MessageInputState extends State<MessageInput> {
                 opacity: !isDisabled ? 1.0 : 0.5,
                 duration: const Duration(milliseconds: 200),
                 child: ElevatedButton(
-                  onPressed: isDisabled || _isDialogLoading
-                      ? null
-                      : _showHistoryModal,
+                  onPressed:
+                      isDisabled || _isDialogLoading ? null : _showHistoryModal,
                   style: ElevatedButton.styleFrom(
                     shape: const CircleBorder(),
                     backgroundColor: customColor0,

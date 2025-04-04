@@ -60,20 +60,22 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         ref.read(chatProvider.notifier).clearChat();
 
         Future.delayed(const Duration(seconds: 1), () {
-          final message = widget.initialMessage ??
-              SdkConfig.instance.initialMessage ??
-              context.l10n.initialMessage;
+          if (mounted) {
+            final message = widget.initialMessage ??
+                SdkConfig.instance.initialMessage ??
+                context.l10n.initialMessage;
 
-          final assistantMessage = ChatMessage.assistant(
-            content: message,
-          );
+            final assistantMessage = ChatMessage.assistant(
+              content: message,
+            );
 
-          final chatHistory = ChatHistory();
-          chatHistory.addMessage(assistantMessage);
+            final chatHistory = ChatHistory();
+            chatHistory.addMessage(assistantMessage);
 
-          final chatNotifier = ref.read(chatProvider.notifier);
-          chatNotifier.setInitialState(
-              ChatState(chatHistory: chatHistory, isFirstDisplay: false));
+            final chatNotifier = ref.read(chatProvider.notifier);
+            chatNotifier.setInitialState(
+                ChatState(chatHistory: chatHistory, isFirstDisplay: false));
+          }
         });
       });
     } else {
@@ -342,7 +344,7 @@ class _LoadingDotState extends State<LoadingDot>
       width: 8,
       height: 8,
       decoration: BoxDecoration(
-        color: widget.color.withOpacity(0.3 + _animation.value * 0.7),
+        color: widget.color.withValues(alpha: 0.3 + _animation.value * 0.7),
         shape: BoxShape.circle,
       ),
     );

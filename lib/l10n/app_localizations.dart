@@ -5,7 +5,7 @@ import '../localization/chat_bot_localizations.dart';
 /// Extension for easy access to localizations
 extension BuildContextExtensions on BuildContext {
   /// Get localized strings
-  AppLocalizations get l10n => AppLocalizations.of(this)!;
+  AppLocalizations get l10n => AppLocalizations.of(this);
 }
 
 /// Localization support for the chat bot SDK
@@ -16,7 +16,7 @@ class ChatBotLocalizationsSetup {
     Locale('ja', ''), // Japanese
     Locale('zh', ''), // Chinese
   ];
-  
+
   /// Get the localization delegates
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = [
     AppLocalizations.delegate,
@@ -24,7 +24,7 @@ class ChatBotLocalizationsSetup {
     GlobalWidgetsLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
   ];
-  
+
   /// Get the locale resolution callback
   static Locale? localeResolutionCallback(
     Locale? locale,
@@ -37,4 +37,4 @@ class ChatBotLocalizationsSetup {
     }
     return supportedLocales.first;
   }
-} 
+}

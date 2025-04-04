@@ -1,4 +1,3 @@
-
 import 'package:chat_bot_sdk/custom/color.dart';
 import 'package:chat_bot_sdk/localization/chat_bot_localizations.dart';
 import 'package:chat_bot_sdk/src/services/conversation_service.dart';
@@ -43,7 +42,7 @@ class ConversationHistoryDialog extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               spreadRadius: 1,
               blurRadius: 10,
               offset: const Offset(0, 2),
@@ -143,7 +142,7 @@ class ConversationHistoryDialog extends StatelessWidget {
                           //   ),
                           // ),
                           leading: CircleAvatar(
-                            backgroundColor: Colors.blue.withOpacity(0.1),
+                            backgroundColor: Colors.blue.withValues(alpha: 0.1),
                             foregroundColor: customColor0 ?? Colors.blue,
                             child: const Icon(Icons.chat_outlined),
                           ),
