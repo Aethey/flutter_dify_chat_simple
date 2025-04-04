@@ -6,6 +6,7 @@
 <p float="left">
   <img src="image/image1.png" width="300" />
   <img src="image/image2.png" width="300" />
+  <img src="image/image3.png" width="300" />
 </p>
 
 <details open>
