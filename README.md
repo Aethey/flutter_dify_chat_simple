@@ -4,9 +4,9 @@
 - **2025/04/02**: Added SharedPreferences storage for session persistence using conversationID
 
 <p float="left">
-  <img src="image/image1.png" width="300" />
-  <img src="image/image2.png" width="300" />
-  <img src="image/image3.png" width="300" />
+  <img src="image/image1.png" width="200" />
+  <img src="image/image2.png" width="200" />
+  <img src="image/image3.png" width="200" />
 </p>
 
 <details open>
