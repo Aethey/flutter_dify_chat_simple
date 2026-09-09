@@ -24,10 +24,7 @@ class ChatBotSdk {
     String apiEndpoint = 'https://api.dify.ai/v1',
   }) {
     debugPrint('Initializing ChatBotSdk with endpoint: $apiEndpoint');
-    SdkConfig.instance.initialize(
-      apiKey: apiKey,
-      apiEndpoint: apiEndpoint,
-    );
+    SdkConfig.instance.initialize(apiKey: apiKey, apiEndpoint: apiEndpoint);
   }
 
   /// Start a chat session

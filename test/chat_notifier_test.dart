@@ -148,9 +148,7 @@ void main() {
     final notifier = env.container.read(chatProvider.notifier);
     notifier.setInitialState(
       ChatState(
-        chatHistory: ChatHistory(
-          messages: [ChatMessage.user(content: 'old')],
-        ),
+        chatHistory: ChatHistory(messages: [ChatMessage.user(content: 'old')]),
         isFirstDisplay: false,
         conversationId: 'c1',
       ),

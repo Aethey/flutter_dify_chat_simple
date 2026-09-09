@@ -115,11 +115,7 @@ class ChatNotifier extends Notifier<ChatState> {
             conversationId: currentConversationId,
             files: files,
           )
-          .listen(
-            _applyChunk,
-            onError: _onStreamError,
-            onDone: _onStreamDone,
-          );
+          .listen(_applyChunk, onError: _onStreamError, onDone: _onStreamDone);
     } catch (e) {
       _onStreamError(e);
       _markLastAssistantFailed();
