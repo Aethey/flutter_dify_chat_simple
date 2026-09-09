@@ -1,15 +1,24 @@
 import 'package:chat_bot_sdk/custom/color.dart';
 import 'package:chat_bot_sdk/localization/chat_bot_localizations.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/entities/conversation.dart';
 
 /// Conversation history sheet: list + swipe-to-delete, styled like ChatPage.
-class ConversationHistoryModal extends StatefulWidget {
-  final List<Conversation> conversations;
+///
+/// Stateless: the list is owned by the caller as a [ValueListenable], so a
+/// deletion rebuilds only the list body, not the sheet chrome.
+class ConversationHistoryModal extends StatelessWidget {
+  final ValueListenable<List<Conversation>> conversations;
   final Function(String) onConversationSelected;
   final VoidCallback? onNewConversation;
+
+  /// Performs the actual delete (API/local). Thrown errors cancel the swipe.
   final Future<void> Function(String conversationId) onDeleteConversation;
+
+  /// Notifies the owner to drop the row from [conversations].
+  final void Function(String conversationId) onConversationRemoved;
   final AppLocalizations l10n;
 
   const ConversationHistoryModal({
@@ -18,25 +27,14 @@ class ConversationHistoryModal extends StatefulWidget {
     required this.onConversationSelected,
     this.onNewConversation,
     required this.onDeleteConversation,
+    required this.onConversationRemoved,
     required this.l10n,
   });
 
-  @override
-  State<ConversationHistoryModal> createState() =>
-      _ConversationHistoryModalState();
-}
-
-class _ConversationHistoryModalState extends State<ConversationHistoryModal> {
-  late List<Conversation> _conversations;
-
-  @override
-  void initState() {
-    super.initState();
-    _conversations = List.from(widget.conversations);
-  }
-
-  Future<bool> _confirmAndDelete(Conversation conversation) async {
-    final l10n = widget.l10n;
+  Future<bool> _confirmAndDelete(
+    BuildContext context,
+    Conversation conversation,
+  ) async {
     final accent = customColor0 ?? Theme.of(context).colorScheme.primary;
     final confirmed = await showDialog<bool>(
       context: context,
@@ -66,7 +64,7 @@ class _ConversationHistoryModalState extends State<ConversationHistoryModal> {
     );
     if (confirmed != true) return false;
     try {
-      await widget.onDeleteConversation(conversation.id);
+      await onDeleteConversation(conversation.id);
       return true;
     } catch (_) {
       return false;
@@ -82,10 +80,10 @@ class _ConversationHistoryModalState extends State<ConversationHistoryModal> {
         '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
 
     if (day == today) {
-      return '${widget.l10n.logToday}  $time';
+      return '${l10n.logToday}  $time';
     }
     if (day == yesterday) {
-      return '${widget.l10n.logYesterday}  $time';
+      return '${l10n.logYesterday}  $time';
     }
     return '${date.month}/${date.day}  $time';
   }
@@ -93,7 +91,6 @@ class _ConversationHistoryModalState extends State<ConversationHistoryModal> {
   @override
   Widget build(BuildContext context) {
     final accent = customColor0 ?? Theme.of(context).colorScheme.primary;
-    final l10n = widget.l10n;
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
@@ -131,10 +128,10 @@ class _ConversationHistoryModalState extends State<ConversationHistoryModal> {
                     ),
                   ),
                 ),
-                if (widget.onNewConversation != null)
+                if (onNewConversation != null)
                   IconButton(
                     tooltip: l10n.startConversation,
-                    onPressed: widget.onNewConversation,
+                    onPressed: onNewConversation,
                     icon: Icon(Icons.add, color: accent),
                   )
                 else
@@ -143,127 +140,136 @@ class _ConversationHistoryModalState extends State<ConversationHistoryModal> {
             ),
           ),
           Expanded(
-            child: _conversations.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.chat_bubble_outline,
-                          size: 64,
-                          color: accent,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          l10n.noConversationHistory,
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                color: accent,
-                              ),
-                        ),
-                      ],
-                    ),
-                  )
-                : ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                    itemCount: _conversations.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 8),
-                    itemBuilder: (context, index) {
-                      final conversation = _conversations[index];
-                      final date = DateTime.fromMillisecondsSinceEpoch(
-                        conversation.updatedAt * 1000,
-                      );
-                      return Dismissible(
-                        key: ValueKey(conversation.id),
-                        direction: DismissDirection.endToStart,
-                        confirmDismiss: (_) => _confirmAndDelete(conversation),
-                        onDismissed: (_) {
-                          setState(() {
-                            _conversations.removeWhere(
-                              (item) => item.id == conversation.id,
-                            );
-                          });
-                        },
-                        background: Container(
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: 20),
-                          decoration: BoxDecoration(
-                            color: Colors.red.shade400,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: const Icon(
-                            Icons.delete_outline,
-                            color: Colors.white,
-                          ),
-                        ),
-                        child: Material(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(16),
-                            onTap: () => widget.onConversationSelected(
-                              conversation.id,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 12,
-                              ),
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 20,
-                                    backgroundColor:
-                                        accent.withValues(alpha: 0.12),
-                                    child: Icon(
-                                      Icons.chat_bubble_outline,
-                                      size: 18,
-                                      color: accent,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          conversation.name.isEmpty
-                                              ? l10n.chatTitle
-                                              : conversation.name,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          _formatDate(date),
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.grey[600],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.chevron_right,
-                                    color: Colors.grey[400],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+            // Only this body rebuilds when a conversation is removed.
+            child: ValueListenableBuilder<List<Conversation>>(
+              valueListenable: conversations,
+              builder: (context, items, _) {
+                if (items.isEmpty) {
+                  return _buildEmptyState(context, accent);
+                }
+                return _buildList(context, items, accent);
+              },
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context, Color accent) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.chat_bubble_outline,
+            size: 64,
+            color: accent,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            l10n.noConversationHistory,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: accent,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildList(
+    BuildContext context,
+    List<Conversation> items,
+    Color accent,
+  ) {
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+      itemCount: items.length,
+      separatorBuilder: (_, _) => const SizedBox(height: 8),
+      itemBuilder: (context, index) {
+        final conversation = items[index];
+        final date = DateTime.fromMillisecondsSinceEpoch(
+          conversation.updatedAt * 1000,
+        );
+        return Dismissible(
+          key: ValueKey(conversation.id),
+          direction: DismissDirection.endToStart,
+          confirmDismiss: (_) => _confirmAndDelete(context, conversation),
+          onDismissed: (_) => onConversationRemoved(conversation.id),
+          background: Container(
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(right: 20),
+            decoration: BoxDecoration(
+              color: Colors.red.shade400,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Icon(
+              Icons.delete_outline,
+              color: Colors.white,
+            ),
+          ),
+          child: Material(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(16),
+              onTap: () => onConversationSelected(conversation.id),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: accent.withValues(alpha: 0.12),
+                      child: Icon(
+                        Icons.chat_bubble_outline,
+                        size: 18,
+                        color: accent,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            conversation.name.isEmpty
+                                ? l10n.chatTitle
+                                : conversation.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _formatDate(date),
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(
+                      Icons.chevron_right,
+                      color: Colors.grey[400],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
