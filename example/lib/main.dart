@@ -5,16 +5,15 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 Future<void> main() async {
   // Initialize Flutter binding
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Load environment variables
-  await dotenv.load();
-  
+
+  await dotenv.load(fileName: '.env.example');
+
   // Initialize SDK with environment variables
   ChatBotSdk.initialize(
     apiKey: dotenv.env['DIFY_API_KEY']!,
     apiEndpoint: dotenv.env['DIFY_API_ENDPOINT']!,
   );
-  
+
   runApp(const MyApp());
 }
 
@@ -92,7 +91,10 @@ class ChatDemoHome extends StatelessWidget {
                       color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .outline
+                            .withValues(alpha: 0.5),
                       ),
                     ),
                     child: Text(
@@ -122,7 +124,10 @@ class ChatDemoHome extends StatelessWidget {
                       color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .outline
+                            .withValues(alpha: 0.5),
                       ),
                     ),
                     child: Column(
@@ -151,27 +156,28 @@ class ChatDemoHome extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             const Spacer(),
-            
+
             // Chat bot icon
             Icon(
               Icons.smart_toy_rounded,
               size: 100,
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+              color:
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             Text(
               'Start a Conversation',
               style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
-            
+
             const SizedBox(height: 12),
-            
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Text(
@@ -180,9 +186,9 @@ class ChatDemoHome extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
-            
+
             const Spacer(),
-            
+
             // Start chat button
             Padding(
               padding: const EdgeInsets.all(24),
@@ -197,7 +203,8 @@ class ChatDemoHome extends StatelessWidget {
                       label: const Text('Start Chat'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onPrimary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -298,4 +305,4 @@ class ChatDemoHome extends StatelessWidget {
       onNewConversation: () => _startChat(context),
     );
   }
-} 
+}
