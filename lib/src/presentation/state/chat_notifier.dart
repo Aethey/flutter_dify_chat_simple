@@ -172,6 +172,9 @@ class ChatNotifier extends Notifier<ChatState> {
               );
             },
             onDone: () {
+              if (state.errorType != null || state.errorMessage != null) {
+                return;
+              }
               final messages = List<ChatMessage>.from(
                 state.chatHistory.messages,
               );
