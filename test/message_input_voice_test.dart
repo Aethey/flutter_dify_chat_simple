@@ -16,7 +16,7 @@ void main() {
           supportedLocales: ChatBotLocalizationsSetup.supportedLocales,
           home: Scaffold(
             body: MessageInput(
-              onSendMessage: (_, _, [__]) {},
+              onSendMessage: (_, _, [_]) {},
               userId: '123',
               inputBarConfig: const ChatInputBarConfig(
                 slot1: ChatInputSlot(action: ChatInputAction.history),
@@ -47,7 +47,7 @@ void main() {
           supportedLocales: ChatBotLocalizationsSetup.supportedLocales,
           home: Scaffold(
             body: MessageInput(
-              onSendMessage: (_, _, [__]) {},
+              onSendMessage: (_, _, [_]) {},
               userId: '123',
               inputBarConfig: const ChatInputBarConfig(
                 slot1: ChatInputSlot(action: ChatInputAction.history),
@@ -85,7 +85,7 @@ void main() {
           supportedLocales: ChatBotLocalizationsSetup.supportedLocales,
           home: Scaffold(
             body: MessageInput(
-              onSendMessage: (_, _, [__]) {},
+              onSendMessage: (_, _, [_]) {},
               userId: '123',
               inputBarConfig: const ChatInputBarConfig(
                 slot1: ChatInputSlot(action: ChatInputAction.history),

@@ -28,9 +28,8 @@ String difyRequestQuery(String query, List<ChatFileAttachment> files) {
 
 /// Dify Service API calls.
 class DifyRemoteDataSource {
-  DifyRemoteDataSource(this._client) : _api = DifyApi(_client.dio);
+  DifyRemoteDataSource(DifyApiClient client) : _api = DifyApi(client.dio);
 
-  final DifyApiClient _client;
   final DifyApi _api;
 
   Future<List<ChatMessage>> fetchConversationHistory({
