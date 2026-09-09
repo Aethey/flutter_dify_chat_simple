@@ -1,0 +1,26 @@
+{
+  "step": 2,
+  "title": "Clean Architecture plan",
+  "status": "in_progress",
+  "public_api_unchanged": [
+    "ChatBotSdk.initialize",
+    "ChatBotSdk.startChat",
+    "ChatBotSdk.getConversations",
+    "ChatBotSdk.deleteConversation"
+  ],
+  "layers": {
+    "domain": "entities, repository interfaces, use cases",
+    "data": "Dify remote datasource, SharedPreferences local datasource, repository impls",
+    "presentation": "Riverpod Notifier, ChatPage, widgets",
+    "core": "SdkConfig, AppException, DifyApiClient"
+  ],
+  "dify_features": {
+    "voice": "record m4a -> POST /audio-to-text (file, user) -> fill input with text",
+    "image": "pick image -> POST /files/upload (file, user) -> POST /chat-messages files[{type:image, transfer_method:local_file, upload_file_id}]"
+  },
+  "dify_fields_only": [
+    "chat-messages: query, inputs, response_mode, user, conversation_id, files.type, files.transfer_method, files.upload_file_id, files.url",
+    "files/upload: file, user",
+    "audio-to-text: file, user"
+  ]
+}

@@ -1,0 +1,25 @@
+targets:
+  $default:
+    sources:
+      - $package$
+      - lib/**
+      - test/**
+      - pubspec.yaml
+      - build.yaml
+    builders:
+      json_serializable:
+        generate_for:
+          - lib/**
+        options:
+          field_rename: snake
+          include_if_null: false
+          explicit_to_json: true
+          any_map: true
+      retrofit_generator:
+        generate_for:
+          - lib/**
+        options:
+          format_output: true
+      freezed:
+        generate_for:
+          - lib/**

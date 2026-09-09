@@ -1,0 +1,22 @@
+{
+  "step": 3,
+  "title": "Clean Architecture refactor + voice/image features",
+  "status": "done",
+  "public_api": "ChatBotSdk.initialize / startChat / getConversations / deleteConversation unchanged",
+  "layout": {
+    "core": "config, AppException, DifyApiClient",
+    "domain": "entities, repository interfaces, use cases",
+    "data": "Dify remote + SharedPreferences local, repository impls",
+    "presentation": "Riverpod Notifier, ChatPage, input/bubble/history widgets"
+  },
+  "features": {
+    "voice": "record aac/m4a -> POST /audio-to-text (file, user) -> insert text into input",
+    "image": "gallery/camera -> POST /files/upload (file, user) -> POST /chat-messages files[{type:image, transfer_method:local_file, upload_file_id}]"
+  },
+  "host_app_ios": [
+    "NSMicrophoneUsageDescription",
+    "NSCameraUsageDescription",
+    "NSPhotoLibraryUsageDescription"
+  ],
+  "analyze": "No issues found (package + example)"
+}

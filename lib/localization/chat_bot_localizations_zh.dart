@@ -95,4 +95,62 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get loadingConversation => '正在加载对话...';
+
+  @override
+  String get pickFromGallery => '相册';
+
+  @override
+  String get pickFromCamera => '相机';
+
+  @override
+  String get attachImage => '添加图片';
+
+  @override
+  String get removeImage => '移除图片';
+
+  @override
+  String get voiceInput => '语音输入';
+
+  @override
+  String get recording => '正在录音...';
+
+  @override
+  String get transcribing => '正在识别...';
+
+  @override
+  String get microphonePermissionDenied => '语音输入需要麦克风权限。';
+
+  @override
+  String get imageUploadFailed => '图片上传失败，请重试。';
+
+  @override
+  String get uploadFile => '上传文件';
+
+  @override
+  String get fileUploadFailed => '文件上传失败，请重试。';
+
+  @override
+  String speechToTextFailed(String message) {
+    return '语音识别失败：$message';
+  }
+
+  @override
+  String get speechToTextDisabled =>
+      '该 Dify 应用未开启语音转文字。请在应用 Features 中启用 Speech to Text。';
+
+  @override
+  String get speechToTextModelUnsupported =>
+      '该 Dify 应用的语音识别模型不支持转写。请在 Dify 设置里把 Speech to Text 换成 Whisper 等语音模型（试用版 GPT-4 不能转写音频）。';
+
+  @override
+  String get emptyAssistantReply => '没有收到回复。如果只发了图片或文件，请附上一句说明再发送。';
+
+  @override
+  String get expandComposer => '展开';
+
+  @override
+  String get collapseComposer => '收起';
+
+  @override
+  String get scrollToBottom => '回到最新消息';
 }

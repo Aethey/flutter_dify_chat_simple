@@ -32,4 +32,8 @@ analyzer:
     missing_required_param: warning
     missing_return: warning
     todo: info
-    arb_missing_metadata: ignore  # Ignore ARB missing metadata warnings
+    invalid_annotation_target: ignore
+  exclude:
+    - build/**
+    - '**/*.g.dart'
+    - '**/*.freezed.dart'

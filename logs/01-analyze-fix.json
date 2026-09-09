@@ -1,0 +1,21 @@
+{
+  "step": 1,
+  "title": "Fix package upgrade analyze errors",
+  "status": "done",
+  "flutter_analyze_before": "53 issues",
+  "root_causes": [
+    "flutter_riverpod 3.x moved StateNotifier/StateNotifierProvider to legacy; ChatNotifier still extended StateNotifier",
+    "flutter_markdown was replaced by flutter_markdown_plus but message_bubble still imported flutter_markdown",
+    "analysis_options referenced unrecognized diagnostic arb_missing_metadata",
+    "library chat_bot_sdk triggered unnecessary_library_name",
+    "unused _showHistoryDialog in message_input.dart"
+  ],
+  "fixes": [
+    "ChatNotifier extends Notifier<ChatState> with build(); chatProvider is NotifierProvider",
+    "import package:flutter_markdown_plus/flutter_markdown_plus.dart",
+    "remove arb_missing_metadata from analysis_options.yaml",
+    "remove library name from chat_bot_sdk.dart",
+    "remove unused history dialog path from MessageInput"
+  ],
+  "flutter_analyze_after": "No issues found"
+}
