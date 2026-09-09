@@ -157,7 +157,8 @@ class ChatNotifier extends Notifier<ChatState> {
 
               state = state.copyWith(
                 chatHistory: state.chatHistory.copyWith(messages: messages),
-                isLoading: chunk.message.status == MessageStatus.streaming ||
+                isLoading:
+                    chunk.message.status == MessageStatus.streaming ||
                     chunk.message.status == MessageStatus.sending,
                 conversationId: chunk.conversationId ?? state.conversationId,
               );
@@ -189,17 +190,13 @@ class ChatNotifier extends Notifier<ChatState> {
                   );
                   final empty = visible.isEmpty;
                   messages.last = last.copyWith(
-                    status:
-                        empty ? MessageStatus.error : MessageStatus.sent,
+                    status: empty ? MessageStatus.error : MessageStatus.sent,
                   );
                   state = state.copyWith(
-                    chatHistory:
-                        state.chatHistory.copyWith(messages: messages),
+                    chatHistory: state.chatHistory.copyWith(messages: messages),
                     isLoading: false,
                     errorMessage: empty ? 'EMPTY_ASSISTANT_REPLY' : null,
-                    errorType: empty
-                        ? ChatErrorType.emptyAssistantReply
-                        : null,
+                    errorType: empty ? ChatErrorType.emptyAssistantReply : null,
                   );
                   return;
                 }
@@ -280,10 +277,7 @@ class ChatNotifier extends Notifier<ChatState> {
       }
       return ErrorInfo(
         type: ChatErrorType.serverError,
-        params: {
-          'statusCode': '?',
-          'message': errorMsg,
-        },
+        params: {'statusCode': '?', 'message': errorMsg},
       );
     } else if (errorMsg.contains('NETWORK_ERROR')) {
       final message = errorMsg.replaceFirst('NETWORK_ERROR:', '');

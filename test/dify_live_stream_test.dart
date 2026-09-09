@@ -31,17 +31,11 @@ void main() {
       expect(apiKey, isNotNull);
       expect(endpoint, isNotNull);
 
-      SdkConfig.instance.initialize(
-        apiKey: apiKey!,
-        apiEndpoint: endpoint!,
-      );
+      SdkConfig.instance.initialize(apiKey: apiKey!, apiEndpoint: endpoint!);
 
       final source = DifyRemoteDataSource(DifyApiClient());
       final chunks = await source
-          .streamChatMessage(
-            query: 'Hello',
-            userId: 'sse-live-test',
-          )
+          .streamChatMessage(query: 'Hello', userId: 'sse-live-test')
           .toList();
 
       expect(chunks, isNotEmpty, reason: 'SSE parser emitted no chat chunks');

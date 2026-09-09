@@ -161,17 +161,13 @@ class ConversationHistoryModal extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.chat_bubble_outline,
-            size: 64,
-            color: accent,
-          ),
+          Icon(Icons.chat_bubble_outline, size: 64, color: accent),
           const SizedBox(height: 16),
           Text(
             l10n.noConversationHistory,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: accent,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(color: accent),
           ),
         ],
       ),
@@ -204,10 +200,7 @@ class ConversationHistoryModal extends StatelessWidget {
               color: Colors.red.shade400,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const Icon(
-              Icons.delete_outline,
-              color: Colors.white,
-            ),
+            child: const Icon(Icons.delete_outline, color: Colors.white),
           ),
           child: Material(
             color: Colors.white,
@@ -259,10 +252,7 @@ class ConversationHistoryModal extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Icon(
-                      Icons.chevron_right,
-                      color: Colors.grey[400],
-                    ),
+                    Icon(Icons.chevron_right, color: Colors.grey[400]),
                   ],
                 ),
               ),

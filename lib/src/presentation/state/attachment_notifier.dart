@@ -54,10 +54,7 @@ class AttachmentNotifier extends Notifier<AttachmentState> {
         items: state.items
             .map(
               (item) => item.id == pending.id
-                  ? item.copyWith(
-                      uploadFileId: uploaded.id,
-                      uploading: false,
-                    )
+                  ? item.copyWith(uploadFileId: uploaded.id, uploading: false)
                   : item,
             )
             .toList(),
@@ -96,5 +93,5 @@ class AttachmentNotifier extends Notifier<AttachmentState> {
 
 final attachmentProvider =
     NotifierProvider<AttachmentNotifier, AttachmentState>(
-  AttachmentNotifier.new,
-);
+      AttachmentNotifier.new,
+    );

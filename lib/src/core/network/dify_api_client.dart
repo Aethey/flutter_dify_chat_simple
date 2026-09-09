@@ -16,9 +16,7 @@ class DifyApiClient {
     final dio = Dio(
       BaseOptions(
         baseUrl: config.apiEndpoint,
-        headers: {
-          'Authorization': 'Bearer ${config.apiKey}',
-        },
+        headers: {'Authorization': 'Bearer ${config.apiKey}'},
         connectTimeout: const Duration(seconds: 30),
         receiveTimeout: const Duration(seconds: 30),
       ),
@@ -70,34 +68,24 @@ class DifyApiClient {
     return _dio.post<T>(
       path,
       data: data,
-      options: (options ?? Options()).copyWith(
-        contentType: 'application/json',
-      ),
+      options: (options ?? Options()).copyWith(contentType: 'application/json'),
     );
   }
 
-  Future<Response<ResponseBody>> postSse(
-    String path, {
-    required Object data,
-  }) {
+  Future<Response<ResponseBody>> postSse(String path, {required Object data}) {
     return _dio.post<ResponseBody>(
       path,
       data: data,
       options: Options(
         responseType: ResponseType.stream,
         contentType: Headers.jsonContentType,
-        headers: const {
-          'Accept': 'text/event-stream',
-        },
+        headers: const {'Accept': 'text/event-stream'},
         receiveTimeout: const Duration(minutes: 5),
       ),
     );
   }
 
-  Future<Response<T>> postForm<T>(
-    String path, {
-    required FormData data,
-  }) {
+  Future<Response<T>> postForm<T>(String path, {required FormData data}) {
     return _dio.post<T>(path, data: data);
   }
 }

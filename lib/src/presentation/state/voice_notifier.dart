@@ -80,5 +80,6 @@ class VoiceNotifier extends Notifier<VoiceState> {
   }
 }
 
-final voiceProvider =
-    NotifierProvider<VoiceNotifier, VoiceState>(VoiceNotifier.new);
+final voiceProvider = NotifierProvider<VoiceNotifier, VoiceState>(
+  VoiceNotifier.new,
+);

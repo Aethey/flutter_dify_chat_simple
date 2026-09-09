@@ -67,9 +67,6 @@ void main() {
       ),
     );
 
-    expect(
-      find.textContaining('No reply was returned'),
-      findsOneWidget,
-    );
+    expect(find.textContaining('No reply was returned'), findsOneWidget);
   });
 }

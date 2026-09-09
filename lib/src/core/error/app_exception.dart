@@ -16,11 +16,7 @@ class AppException implements Exception {
   /// Optional HTTP status code.
   final int? statusCode;
 
-  const AppException({
-    required this.code,
-    this.message,
-    this.statusCode,
-  });
+  const AppException({required this.code, this.message, this.statusCode});
 
   factory AppException.fromDio(DioException error) {
     switch (error.type) {
@@ -33,8 +29,7 @@ class AppException implements Exception {
         return AppException(
           code: parsed.code ?? 'SERVER_ERROR',
           statusCode: error.response?.statusCode,
-          message: parsed.message ??
-              '${error.response?.data ?? error.message}',
+          message: parsed.message ?? '${error.response?.data ?? error.message}',
         );
       case DioExceptionType.connectionTimeout:
         return const AppException(code: 'CONNECTION_TIMEOUT');
@@ -47,10 +42,7 @@ class AppException implements Exception {
       case DioExceptionType.cancel:
         return const AppException(code: 'REQUEST_CANCELLED');
       default:
-        return AppException(
-          code: 'NETWORK_ERROR',
-          message: error.message,
-        );
+        return AppException(code: 'NETWORK_ERROR', message: error.message);
     }
   }
 

@@ -54,10 +54,12 @@ class DifyRemoteDataSource {
           messages.add(ChatMessage.user(content: query));
         }
         if (item.answer != null) {
-          messages.add(ChatMessage.assistant(
-            content: item.answer!,
-            status: MessageStatus.sent,
-          ));
+          messages.add(
+            ChatMessage.assistant(
+              content: item.answer!,
+              status: MessageStatus.sent,
+            ),
+          );
         }
       }
 
@@ -87,15 +89,14 @@ class DifyRemoteDataSource {
         inputs: const <String, dynamic>{},
         responseMode: 'streaming',
         user: userId,
-        conversationId:
-            conversationId != null && conversationId.isNotEmpty
-                ? conversationId
-                : null,
+        conversationId: conversationId != null && conversationId.isNotEmpty
+            ? conversationId
+            : null,
         files: files.isEmpty
             ? null
             : files
-                .map((file) => DifyChatFileDto.fromJson(file.toApiJson()))
-                .toList(),
+                  .map((file) => DifyChatFileDto.fromJson(file.toApiJson()))
+                  .toList(),
       );
 
       final parser = DifySseParser();

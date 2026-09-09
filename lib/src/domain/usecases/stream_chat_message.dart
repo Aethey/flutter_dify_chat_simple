@@ -31,10 +31,7 @@ class StreamChatMessage {
       savedId = id;
       // Do not await: pausing this stream pauses Dio's SSE download.
       unawaited(
-        _conversationRepository.save(
-          userId: userId,
-          conversationId: id,
-        ),
+        _conversationRepository.save(userId: userId, conversationId: id),
       );
     }
   }

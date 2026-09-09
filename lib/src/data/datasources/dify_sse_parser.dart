@@ -86,8 +86,8 @@ class DifySseParser {
         status: parsed.isError
             ? MessageStatus.error
             : parsed.isEnd
-                ? MessageStatus.sent
-                : MessageStatus.streaming,
+            ? MessageStatus.sent
+            : MessageStatus.streaming,
       ),
       conversationId: conversationId,
     );
