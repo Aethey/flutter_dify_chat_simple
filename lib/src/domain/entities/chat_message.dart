@@ -57,9 +57,9 @@ class ChatMessage {
     this.status = MessageStatus.sent,
     DateTime? timestamp,
     List<ChatFileAttachment>? attachments,
-  })  : id = id ?? const Uuid().v4(),
-        timestamp = timestamp ?? DateTime.now(),
-        attachments = attachments ?? const [];
+  }) : id = id ?? const Uuid().v4(),
+       timestamp = timestamp ?? DateTime.now(),
+       attachments = attachments ?? const [];
 
   /// Create a user message
   static ChatMessage user({
@@ -88,13 +88,8 @@ class ChatMessage {
   }
 
   /// Create a system message
-  static ChatMessage system({
-    required String content,
-  }) {
-    return ChatMessage(
-      content: content,
-      role: MessageRole.system,
-    );
+  static ChatMessage system({required String content}) {
+    return ChatMessage(content: content, role: MessageRole.system);
   }
 
   /// Create a copy of this message with updated fields

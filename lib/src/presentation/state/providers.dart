@@ -28,15 +28,14 @@ final difyRemoteDataSourceProvider = Provider<DifyRemoteDataSource>((ref) {
 
 final conversationLocalDataSourceProvider =
     Provider<ConversationLocalDataSource>((ref) {
-  return ConversationLocalDataSource();
-});
+      return ConversationLocalDataSource();
+    });
 
 final chatRepositoryProvider = Provider<ChatRepository>((ref) {
   return ChatRepositoryImpl(ref.watch(difyRemoteDataSourceProvider));
 });
 
-final conversationRepositoryProvider =
-    Provider<ConversationRepository>((ref) {
+final conversationRepositoryProvider = Provider<ConversationRepository>((ref) {
   return ConversationRepositoryImpl(
     ref.watch(conversationLocalDataSourceProvider),
   );
@@ -59,8 +58,8 @@ final streamChatMessageUseCaseProvider = Provider<StreamChatMessage>((ref) {
 
 final loadConversationHistoryUseCaseProvider =
     Provider<LoadConversationHistory>((ref) {
-  return LoadConversationHistory(ref.watch(chatRepositoryProvider));
-});
+      return LoadConversationHistory(ref.watch(chatRepositoryProvider));
+    });
 
 final listConversationsUseCaseProvider = Provider<ListConversations>((ref) {
   return ListConversations(ref.watch(conversationRepositoryProvider));
@@ -77,4 +76,3 @@ final uploadChatFileUseCaseProvider = Provider<UploadChatFile>((ref) {
 final transcribeAudioUseCaseProvider = Provider<TranscribeAudio>((ref) {
   return TranscribeAudio(ref.watch(audioRepositoryProvider));
 });
-

@@ -22,10 +22,10 @@ class ChatHistory {
     List<ChatMessage>? messages,
     DateTime? createdAt,
     DateTime? updatedAt,
-  })  : id = id ?? const Uuid().v4(),
-        messages = messages ?? [],
-        createdAt = createdAt ?? DateTime.now(),
-        updatedAt = updatedAt ?? DateTime.now();
+  }) : id = id ?? const Uuid().v4(),
+       messages = messages ?? [],
+       createdAt = createdAt ?? DateTime.now(),
+       updatedAt = updatedAt ?? DateTime.now();
 
   /// Add a new message to the conversation
   void addMessage(ChatMessage message) {
@@ -41,8 +41,9 @@ class ChatHistory {
 
   /// Get the most recent user message
   ChatMessage? get lastUserMessage {
-    final userMessages =
-        messages.where((msg) => msg.role == MessageRole.user).toList();
+    final userMessages = messages
+        .where((msg) => msg.role == MessageRole.user)
+        .toList();
 
     if (userMessages.isEmpty) return null;
     return userMessages.last;
@@ -50,17 +51,16 @@ class ChatHistory {
 
   /// Get the most recent assistant message
   ChatMessage? get lastAssistantMessage {
-    final assistantMessages =
-        messages.where((msg) => msg.role == MessageRole.assistant).toList();
+    final assistantMessages = messages
+        .where((msg) => msg.role == MessageRole.assistant)
+        .toList();
 
     if (assistantMessages.isEmpty) return null;
     return assistantMessages.last;
   }
 
   /// Create a copy of this history with updated fields
-  ChatHistory copyWith({
-    List<ChatMessage>? messages,
-  }) {
+  ChatHistory copyWith({List<ChatMessage>? messages}) {
     return ChatHistory(
       id: id,
       messages: messages ?? List.from(this.messages),

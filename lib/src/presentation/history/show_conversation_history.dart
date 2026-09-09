@@ -20,7 +20,8 @@ Future<void> showConversationHistory({
     backgroundColor: Colors.transparent,
     builder: (sheetContext) {
       return Localizations(
-        locale: locale ??
+        locale:
+            locale ??
             Localizations.maybeLocaleOf(context) ??
             const Locale('en'),
         delegates: ChatBotLocalizationsSetup.localizationsDelegates,

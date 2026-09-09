@@ -5,8 +5,5 @@ class ChatStreamChunk {
   final ChatMessage message;
   final String? conversationId;
 
-  const ChatStreamChunk({
-    required this.message,
-    this.conversationId,
-  });
+  const ChatStreamChunk({required this.message, this.conversationId});
 }
