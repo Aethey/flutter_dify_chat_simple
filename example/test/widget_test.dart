@@ -1,30 +1,50 @@
-// This is a basic Flutter widget test.
+// Smoke test for the example app.
 //
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// The example reads its configuration from a `.env` file in `main()`. Tests do
+// not run `main()`, so this file loads equivalent values with `dotenv.testLoad`
+// and initializes the SDK before pumping the widget tree.
 
-import 'package:flutter/material.dart';
+import 'package:chat_bot_sdk/chat_bot_sdk.dart';
+import 'package:chat_bot_sdk_example/main.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chat_bot_sdk_example/main.dart';
+Future<void> _loadEnvAndInitSdk() async {
+  await dotenv.testLoad(
+    fileInput: 'DIFY_API_KEY=test-key\n'
+        'DIFY_API_ENDPOINT=https://api.dify.ai/v1\n',
+  );
+  ChatBotSdk.initialize(
+    apiKey: 'test-key',
+    apiEndpoint: 'https://api.dify.ai/v1',
+  );
+}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('renders the demo home screen', (tester) async {
+    await _loadEnvAndInitSdk();
+
     await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text('Current Configuration'), findsOneWidget);
+    expect(find.text('Start a Conversation'), findsOneWidget);
+    expect(find.text('Start Chat'), findsOneWidget);
+    expect(find.text('Conversation History'), findsOneWidget);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('opens the chat page from the home screen', (tester) async {
+    await _loadEnvAndInitSdk();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Start Chat'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('AI Assistant'), findsOneWidget);
+
+    // Fire the delayed welcome-message timer so no timers leak at teardown.
+    await tester.pump(const Duration(seconds: 1));
   });
 }
