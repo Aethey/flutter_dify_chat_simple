@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' show lerpDouble;
 
-import 'package:chat_bot_sdk/custom/color.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,6 +26,12 @@ class MessageInput extends ConsumerStatefulWidget {
   ])
   onSendMessage;
 
+  /// Opens an existing conversation (triggered by the history slot).
+  final void Function(String conversationId)? onOpenConversation;
+
+  /// Starts a brand-new conversation (triggered by the history sheet).
+  final VoidCallback? onNewConversation;
+
   final String userId;
   final String? conversationId;
   final bool isLoading;
@@ -40,6 +45,8 @@ class MessageInput extends ConsumerStatefulWidget {
     required this.userId,
     required this.inputBarConfig,
     this.conversationId,
+    this.onOpenConversation,
+    this.onNewConversation,
     this.isLoading = false,
     this.isLoadingHistory = false,
     this.hintText,
@@ -73,6 +80,12 @@ class _MessageInputState extends ConsumerState<MessageInput>
   var _pinTier2 = false;
   var _stackScheduled = false;
 
+  // Cached line measurement so tier-2 detection does not relayout on every
+  // rebuild while the text is unchanged.
+  String? _measuredText;
+  double _measuredWidth = -1;
+  int _measuredLines = 0;
+
   @override
   void initState() {
     super.initState();
@@ -94,7 +107,6 @@ class _MessageInputState extends ConsumerState<MessageInput>
       curve: Curves.easeInOutCubic,
       reverseCurve: Curves.easeInOutCubic,
     );
-    _textController.addListener(() => setState(() {}));
     _focusNode.addListener(_syncExpansion);
   }
 
@@ -158,9 +170,11 @@ class _MessageInputState extends ConsumerState<MessageInput>
       widget.conversationId,
       files,
     );
+    setState(() {
+      _isFullscreen = false;
+      _pinTier2 = false;
+    });
     _textController.clear();
-    _isFullscreen = false;
-    _pinTier2 = false;
     _focusNode.requestFocus();
   }
 
@@ -194,12 +208,8 @@ class _MessageInputState extends ConsumerState<MessageInput>
       loadConversations: () => chatNotifier.loadConversations(widget.userId),
       deleteConversation: (id) =>
           chatNotifier.deleteConversation(widget.userId, id),
-      onConversationSelected: (conversationId) {
-        widget.onSendMessage('', conversationId);
-      },
-      onNewConversation: () {
-        widget.onSendMessage('new_conversation_with_animation', null);
-      },
+      onConversationSelected: widget.onOpenConversation,
+      onNewConversation: widget.onNewConversation,
     );
   }
 
@@ -404,11 +414,14 @@ class _MessageInputState extends ConsumerState<MessageInput>
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (attachments.items.isNotEmpty) _buildPendingAttachments(),
-                _buildMorphingComposer(
-                  config,
-                  voice,
-                  hintText,
-                  maxComposerH: maxComposerH,
+                ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: _textController,
+                  builder: (context, value, _) => _buildMorphingComposer(
+                    config,
+                    voice,
+                    hintText,
+                    maxComposerH: maxComposerH,
+                  ),
                 ),
               ],
             ),
@@ -552,11 +565,17 @@ class _MessageInputState extends ConsumerState<MessageInput>
     final text = _textController.text;
     if (text.isEmpty) return false;
     if (text.contains('\n')) return true;
-    final painter = TextPainter(
-      text: TextSpan(text: text, style: style),
-      textDirection: Directionality.of(context),
-    )..layout(maxWidth: math.max(8, composerWidth - 24));
-    return painter.computeLineMetrics().length >= 2;
+    final double maxWidth = math.max(8.0, composerWidth - 24);
+    if (text != _measuredText || maxWidth != _measuredWidth) {
+      _measuredText = text;
+      _measuredWidth = maxWidth;
+      final painter = TextPainter(
+        text: TextSpan(text: text, style: style),
+        textDirection: Directionality.of(context),
+      )..layout(maxWidth: maxWidth);
+      _measuredLines = painter.computeLineMetrics().length;
+    }
+    return _measuredLines >= 2;
   }
 
   void _toggleFullscreen() {
@@ -640,7 +659,7 @@ class _MessageInputState extends ConsumerState<MessageInput>
             ).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
           ),
         ),
-        cursorColor: customColor1,
+        cursorColor: Theme.of(context).colorScheme.primary,
         style: TextStyle(
           color: Theme.of(context).colorScheme.onSurface,
           fontSize: 16,
@@ -714,9 +733,9 @@ class _MessageInputState extends ConsumerState<MessageInput>
   Widget _buildSendButton() {
     final enabled = _canSend;
     return Material(
-      color: (customColor0 ?? Theme.of(context).colorScheme.primary).withValues(
-        alpha: enabled ? 1 : 0.4,
-      ),
+      color: Theme.of(
+        context,
+      ).colorScheme.primary.withValues(alpha: enabled ? 1 : 0.4),
       shape: const CircleBorder(),
       child: InkWell(
         customBorder: const CircleBorder(),

@@ -57,6 +57,13 @@ void main() {
     expect(listed.single.name, startsWith('Chat '));
   });
 
+  test('save with a blank name falls back to a Chat timestamp', () async {
+    await source.save(userId: 'user-1', conversationId: 'c1', name: '   ');
+
+    final listed = await source.list('user-1');
+    expect(listed.single.name, startsWith('Chat '));
+  });
+
   test('save updates an existing conversation and keeps createdAt', () async {
     await source.save(userId: 'user-1', conversationId: 'c1', name: 'Old');
     final createdAt = (await source.list('user-1')).single.createdAt;

@@ -1,4 +1,3 @@
-import 'package:chat_bot_sdk/custom/color.dart';
 import 'package:chat_bot_sdk/localization/chat_bot_localizations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -35,12 +34,12 @@ class ConversationHistoryModal extends StatelessWidget {
     BuildContext context,
     Conversation conversation,
   ) async {
-    final accent = customColor0 ?? Theme.of(context).colorScheme.primary;
+    final accent = Theme.of(context).colorScheme.primary;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -55,7 +54,7 @@ class ConversationHistoryModal extends StatelessWidget {
               onPressed: () => Navigator.pop(dialogContext, true),
               child: Text(
                 l10n.delete,
-                style: TextStyle(color: Colors.red.shade600),
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ),
           ],
@@ -90,12 +89,12 @@ class ConversationHistoryModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = customColor0 ?? Theme.of(context).colorScheme.primary;
+    final accent = Theme.of(context).colorScheme.primary;
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: Column(
@@ -197,13 +196,13 @@ class ConversationHistoryModal extends StatelessWidget {
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(right: 20),
             decoration: BoxDecoration(
-              color: Colors.red.shade400,
+              color: Theme.of(context).colorScheme.error,
               borderRadius: BorderRadius.circular(16),
             ),
             child: const Icon(Icons.delete_outline, color: Colors.white),
           ),
           child: Material(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(16),
             child: InkWell(
               borderRadius: BorderRadius.circular(16),
@@ -235,10 +234,10 @@ class ConversationHistoryModal extends StatelessWidget {
                                 : conversation.name,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: Colors.black87,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -246,13 +245,18 @@ class ConversationHistoryModal extends StatelessWidget {
                             _formatDate(date),
                             style: TextStyle(
                               fontSize: 13,
-                              color: Colors.grey[600],
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    Icon(Icons.chevron_right, color: Colors.grey[400]),
+                    Icon(
+                      Icons.chevron_right,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ],
                 ),
               ),

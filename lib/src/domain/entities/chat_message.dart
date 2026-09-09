@@ -35,13 +35,13 @@ class ChatMessage {
   final String id;
 
   /// Content of the message
-  String content;
+  final String content;
 
   /// Role of the message sender
   final MessageRole role;
 
   /// Current status of the message
-  MessageStatus status;
+  final MessageStatus status;
 
   /// Timestamp when the message was created
   final DateTime timestamp;

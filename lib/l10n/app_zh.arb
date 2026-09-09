@@ -24,6 +24,7 @@
   "connectionError": "连接错误：请检查您的互联网连接",
   "requestCancelled": "请求已取消",
   "serverError": "服务器错误 (HTTP {statusCode}): {message}",
+  "apiError": "API 错误（{code}）：{message}",
   "logToday": "今天",
   "logYesterday": "昨天",
   "conversationHistory": "对话历史",

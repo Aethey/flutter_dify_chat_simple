@@ -31,8 +31,31 @@ class StreamChatMessage {
       savedId = id;
       // Do not await: pausing this stream pauses Dio's SSE download.
       unawaited(
-        _conversationRepository.save(userId: userId, conversationId: id),
+        _conversationRepository.save(
+          userId: userId,
+          conversationId: id,
+          name: _titleFor(query, files),
+        ),
       );
     }
+  }
+
+  /// Uses the first user message (or first file name) as the conversation
+  /// title so the history list reads better than a bare timestamp.
+  String _titleFor(String query, List<ChatFileAttachment> files) {
+    final text = query.trim();
+    if (text.isNotEmpty) return _truncate(text);
+    for (final file in files) {
+      final name = file.name;
+      if (name != null && name.trim().isNotEmpty) {
+        return _truncate(name);
+      }
+    }
+    return '';
+  }
+
+  static String _truncate(String text, [int maxLength = 40]) {
+    if (text.length <= maxLength) return text;
+    return '${text.substring(0, maxLength)}…';
   }
 }

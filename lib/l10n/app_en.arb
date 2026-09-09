@@ -23,6 +23,7 @@
   "connectionError": "Connection error: Please check your internet connection",
   "requestCancelled": "Request was cancelled",
   "serverError": "Server error (HTTP {statusCode}): {message}",
+  "apiError": "API error ({code}): {message}",
   "logToday": "Today",
   "logYesterday": "Yesterday",
   "conversationHistory": "Conversation History",
@@ -63,6 +64,18 @@
       "message": {
         "type": "String",
         "example": "Not found"
+      }
+    }
+  },
+  "@apiError": {
+    "placeholders": {
+      "code": {
+        "type": "String",
+        "example": "invalid_param"
+      },
+      "message": {
+        "type": "String",
+        "example": "Request failed"
       }
     }
   },

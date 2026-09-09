@@ -1,12 +1,10 @@
 import 'dart:math' as math;
 
-import 'package:chat_bot_sdk/custom/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../core/config/sdk_config.dart';
-import '../../domain/entities/chat_history.dart';
 import '../../domain/entities/chat_message.dart';
 import '../config/chat_input_bar_config.dart';
 import '../state/chat_notifier.dart';
@@ -56,36 +54,19 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     super.initState();
     _scrollController.addListener(_handleScroll);
 
-    if (widget.conversationId == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(chatProvider.notifier).clearChat();
-
-        Future.delayed(const Duration(seconds: 1), () {
-          if (mounted) {
-            final message =
-                widget.initialMessage ??
-                SdkConfig.instance.initialMessage ??
-                context.l10n.initialMessage;
-
-            final assistantMessage = ChatMessage.assistant(content: message);
-
-            final chatHistory = ChatHistory();
-            chatHistory.addMessage(assistantMessage);
-
-            final chatNotifier = ref.read(chatProvider.notifier);
-            chatNotifier.setInitialState(
-              ChatState(chatHistory: chatHistory, isFirstDisplay: false),
-            );
-          }
-        });
-      });
-    } else {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.conversationId == null) {
+        final message =
+            widget.initialMessage ??
+            SdkConfig.instance.initialMessage ??
+            context.l10n.initialMessage;
+        ref.read(chatProvider.notifier).startNewConversation(message);
+      } else {
         ref
             .read(chatProvider.notifier)
             .loadConversationHistory(widget.conversationId!, widget.userID);
-      });
-    }
+      }
+    });
   }
 
   @override
@@ -128,12 +109,12 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 
   void _onChatStateChanged(ChatState next) {
     final messages = next.chatHistory.messages;
-    if (messages.length != _lastMessageCount) {
-      _lastMessageCount = messages.length;
-      _scrollToBottom();
-    } else if (messages.isNotEmpty &&
-        messages.last.content != _lastMessageContent) {
-      _lastMessageContent = messages.last.content;
+    final newCount = messages.length;
+    final newContent = messages.isEmpty ? '' : messages.last.content;
+
+    if (newCount != _lastMessageCount || newContent != _lastMessageContent) {
+      _lastMessageCount = newCount;
+      _lastMessageContent = newContent;
       _scrollToBottom();
     }
   }
@@ -154,18 +135,21 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         appBar: AppBar(
           title: Text(
             widget.title ?? context.l10n.chatTitle,
-            style: TextStyle(color: customColor0),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           elevation: 1,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: customColor0),
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
         ),
-        backgroundColor: Colors.grey[200],
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
         body: LayoutBuilder(
           builder: (context, constraints) {
             const minListH = 96.0;
@@ -212,12 +196,14 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                 if (chatState.errorMessage != null)
                   Container(
                     padding: const EdgeInsets.all(8.0),
-                    color: Colors.red.shade100,
+                    color: Theme.of(context).colorScheme.errorContainer,
                     width: double.infinity,
                     child: Text(
                       chatState.getLocalizedErrorMessage(context) ??
                           context.l10n.genericError,
-                      style: const TextStyle(color: Colors.red),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onErrorContainer,
+                      ),
                     ),
                   ),
                 ConstrainedBox(
@@ -240,6 +226,23 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                       _isAtBottom.value = true;
                       _scrollToBottom(force: true);
                     },
+                    onOpenConversation: (conversationId) {
+                      chatNotifier.loadConversationHistory(
+                        conversationId,
+                        widget.userID,
+                      );
+                      _isAtBottom.value = true;
+                      _scrollToBottom(force: true);
+                    },
+                    onNewConversation: () {
+                      final message =
+                          widget.initialMessage ??
+                          SdkConfig.instance.initialMessage ??
+                          context.l10n.initialMessage;
+                      chatNotifier.startNewConversation(message);
+                      _isAtBottom.value = true;
+                      _scrollToBottom(force: true);
+                    },
                     userId: widget.userID,
                     inputBarConfig: widget.inputBarConfig,
                     isLoading: chatState.isLoading,
@@ -257,9 +260,9 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   }
 
   Widget _buildScrollToBottomButton(BuildContext context) {
-    final accent = customColor0 ?? Theme.of(context).colorScheme.primary;
+    final accent = Theme.of(context).colorScheme.primary;
     return Material(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       elevation: 2,
       shadowColor: Colors.black26,
       shape: const CircleBorder(),
@@ -304,13 +307,17 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.chat_bubble_outline, size: 64, color: customColor0),
+          Icon(
+            Icons.chat_bubble_outline,
+            size: 64,
+            color: Theme.of(context).colorScheme.primary,
+          ),
           const SizedBox(height: 16),
           Text(
             context.l10n.startConversation,
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge!.copyWith(color: customColor0),
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ],
       ),
@@ -326,7 +333,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
             width: 60,
             height: 30,
             decoration: BoxDecoration(
-              color: Colors.grey[100],
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(30),
             ),
             child: Row(
@@ -336,7 +343,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                   Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: LoadingDot(
-                      color: customColor0 ?? Colors.blue,
+                      color: Theme.of(context).colorScheme.primary,
                       delay: Duration(milliseconds: 300 * i),
                     ),
                   ),
@@ -346,9 +353,9 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           const SizedBox(height: 16),
           Text(
             context.l10n.loadingConversation,
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium!.copyWith(color: customColor0),
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ],
       ),
