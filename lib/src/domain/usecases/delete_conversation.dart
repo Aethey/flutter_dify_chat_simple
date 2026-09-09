@@ -6,10 +6,7 @@ class DeleteConversation {
 
   final ConversationRepository _conversationRepository;
 
-  Future<void> call({
-    required String userId,
-    required String conversationId,
-  }) {
+  Future<void> call({required String userId, required String conversationId}) {
     return _conversationRepository.delete(
       userId: userId,
       conversationId: conversationId,

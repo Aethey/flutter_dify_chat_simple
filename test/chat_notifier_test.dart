@@ -71,7 +71,7 @@ class _FakeConversationRepository implements ConversationRepository {
 
 class _ThrowingStreamChatMessage extends StreamChatMessage {
   _ThrowingStreamChatMessage()
-      : super(_FakeChatRepository(), _FakeConversationRepository());
+    : super(_FakeChatRepository(), _FakeConversationRepository());
 
   @override
   Stream<ChatStreamChunk> call({
@@ -88,7 +88,8 @@ class _ThrowingStreamChatMessage extends StreamChatMessage {
   ProviderContainer container,
   _FakeChatRepository chat,
   _FakeConversationRepository conversations,
-}) _createContainer({StreamChatMessage? streamChatMessage}) {
+})
+_createContainer({StreamChatMessage? streamChatMessage}) {
   final chat = _FakeChatRepository();
   final conversations = _FakeConversationRepository();
   final container = ProviderContainer(
@@ -100,11 +101,7 @@ class _ThrowingStreamChatMessage extends StreamChatMessage {
     ],
   );
   addTearDown(container.dispose);
-  return (
-    container: container,
-    chat: chat,
-    conversations: conversations,
-  );
+  return (container: container, chat: chat, conversations: conversations);
 }
 
 void main() {
@@ -323,10 +320,7 @@ void main() {
       ChatErrorType.requestCancelled,
     );
     expect(await typeFor(Exception('nope')), ChatErrorType.generic);
-    expect(
-      await typeFor(Exception('SERVER_ERROR')),
-      ChatErrorType.serverError,
-    );
+    expect(await typeFor(Exception('SERVER_ERROR')), ChatErrorType.serverError);
   });
 
   test('new_conversation_with_animation restores the welcome message', () {

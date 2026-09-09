@@ -15,7 +15,9 @@ void main() {
     } else {
       final units = sse.codeUnits;
       for (var i = 0; i < units.length; i += chunkSize) {
-        final end = (i + chunkSize < units.length) ? i + chunkSize : units.length;
+        final end = (i + chunkSize < units.length)
+            ? i + chunkSize
+            : units.length;
         parser.addUtf8(units.sublist(i, end));
       }
     }
@@ -58,10 +60,7 @@ data: {"event":"workflow_finished","conversation_id":"c1","data":{"status":"succ
 ''';
     final content = parseToAnswer(sse);
     expect(content, '<think>hidden</think>Visible reply');
-    expect(
-      visibleAssistantContent(content, streaming: false),
-      'Visible reply',
-    );
+    expect(visibleAssistantContent(content, streaming: false), 'Visible reply');
   });
 
   test('skips ping SSE event line and still reads the next data frame', () {

@@ -19,11 +19,7 @@ void main() {
   });
 
   test('save inserts a named conversation', () async {
-    await source.save(
-      userId: 'user-1',
-      conversationId: 'c1',
-      name: 'First',
-    );
+    await source.save(userId: 'user-1', conversationId: 'c1', name: 'First');
 
     final listed = await source.list('user-1');
     expect(listed.single.id, 'c1');
@@ -62,18 +58,10 @@ void main() {
   });
 
   test('save updates an existing conversation and keeps createdAt', () async {
-    await source.save(
-      userId: 'user-1',
-      conversationId: 'c1',
-      name: 'Old',
-    );
+    await source.save(userId: 'user-1', conversationId: 'c1', name: 'Old');
     final createdAt = (await source.list('user-1')).single.createdAt;
 
-    await source.save(
-      userId: 'user-1',
-      conversationId: 'c1',
-      name: 'New',
-    );
+    await source.save(userId: 'user-1', conversationId: 'c1', name: 'New');
 
     final listed = await source.list('user-1');
     expect(listed.single.name, 'New');
@@ -82,16 +70,8 @@ void main() {
   });
 
   test('delete removes only the matching conversation', () async {
-    await source.save(
-      userId: 'user-1',
-      conversationId: 'c1',
-      name: 'Keep',
-    );
-    await source.save(
-      userId: 'user-1',
-      conversationId: 'c2',
-      name: 'Drop',
-    );
+    await source.save(userId: 'user-1', conversationId: 'c1', name: 'Keep');
+    await source.save(userId: 'user-1', conversationId: 'c2', name: 'Drop');
 
     await source.delete(userId: 'user-1', conversationId: 'c2');
 
@@ -100,16 +80,8 @@ void main() {
   });
 
   test('conversations are isolated per user', () async {
-    await source.save(
-      userId: 'user-1',
-      conversationId: 'c1',
-      name: 'A',
-    );
-    await source.save(
-      userId: 'user-2',
-      conversationId: 'c2',
-      name: 'B',
-    );
+    await source.save(userId: 'user-1', conversationId: 'c1', name: 'A');
+    await source.save(userId: 'user-2', conversationId: 'c2', name: 'B');
 
     expect((await source.list('user-1')).single.id, 'c1');
     expect((await source.list('user-2')).single.id, 'c2');

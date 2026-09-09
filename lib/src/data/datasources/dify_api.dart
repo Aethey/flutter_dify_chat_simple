@@ -11,11 +11,8 @@ part 'dify_api.g.dart';
 /// Generated Dify Service API client.
 @RestApi()
 abstract class DifyApi {
-  factory DifyApi(
-    Dio dio, {
-    String? baseUrl,
-    ParseErrorLogger? errorLogger,
-  }) = _DifyApi;
+  factory DifyApi(Dio dio, {String? baseUrl, ParseErrorLogger? errorLogger}) =
+      _DifyApi;
 
   @GET('/messages')
   Future<DifyMessagesResponseDto> getMessages({
@@ -31,9 +28,7 @@ abstract class DifyApi {
     'Accept': 'text/event-stream',
     'Content-Type': 'application/json',
   })
-  Stream<Uint8List> streamChatMessages(
-    @Body() DifyChatMessageRequestDto body,
-  );
+  Stream<Uint8List> streamChatMessages(@Body() DifyChatMessageRequestDto body);
 
   @POST('/files/upload')
   @MultiPart()

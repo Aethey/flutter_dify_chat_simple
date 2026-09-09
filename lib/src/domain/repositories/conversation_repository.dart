@@ -10,8 +10,5 @@ abstract class ConversationRepository {
 
   Future<List<Conversation>> list(String userId);
 
-  Future<void> delete({
-    required String userId,
-    required String conversationId,
-  });
+  Future<void> delete({required String userId, required String conversationId});
 }

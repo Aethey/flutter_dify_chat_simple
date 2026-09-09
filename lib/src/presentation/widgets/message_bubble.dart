@@ -62,16 +62,14 @@ class MessageBubble extends StatelessWidget {
           if (message.content.isNotEmpty)
             Text(
               message.content,
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-              ),
+              style: const TextStyle(color: Colors.black, fontSize: 16),
             ),
         ],
       );
     }
 
-    final isStreaming = message.status == MessageStatus.streaming ||
+    final isStreaming =
+        message.status == MessageStatus.streaming ||
         message.status == MessageStatus.sending;
     final visible = visibleAssistantContent(
       message.content,
@@ -145,11 +143,7 @@ class MessageBubble extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 8),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.file(
-                File(path),
-                height: 160,
-                fit: BoxFit.cover,
-              ),
+              child: Image.file(File(path), height: 160, fit: BoxFit.cover),
             ),
           ),
         );
@@ -181,15 +175,11 @@ class MessageBubble extends StatelessWidget {
 
   MarkdownStyleSheet _styleSheet(BuildContext context, Color textColor) {
     return MarkdownStyleSheet(
-      p: TextStyle(
-        color: textColor,
-        fontSize: 16,
-      ),
+      p: TextStyle(color: textColor, fontSize: 16),
       code: TextStyle(
-        backgroundColor: Theme.of(context)
-            .colorScheme
-            .surfaceContainerHighest
-            .withValues(alpha: 0.5),
+        backgroundColor: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         color: Theme.of(context).colorScheme.onSurfaceVariant,
         fontSize: 14,
       ),

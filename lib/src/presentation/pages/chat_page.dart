@@ -62,13 +62,12 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 
         Future.delayed(const Duration(seconds: 1), () {
           if (mounted) {
-            final message = widget.initialMessage ??
+            final message =
+                widget.initialMessage ??
                 SdkConfig.instance.initialMessage ??
                 context.l10n.initialMessage;
 
-            final assistantMessage = ChatMessage.assistant(
-              content: message,
-            );
+            final assistantMessage = ChatMessage.assistant(content: message);
 
             final chatHistory = ChatHistory();
             chatHistory.addMessage(assistantMessage);
@@ -82,10 +81,9 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       });
     } else {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(chatProvider.notifier).loadConversationHistory(
-              widget.conversationId!,
-              widget.userID,
-            );
+        ref
+            .read(chatProvider.notifier)
+            .loadConversationHistory(widget.conversationId!, widget.userID);
       });
     }
   }
@@ -161,10 +159,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           backgroundColor: Colors.white,
           elevation: 1,
           leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: customColor0,
-            ),
+            icon: Icon(Icons.arrow_back_ios, color: customColor0),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -187,11 +182,11 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                         child: chatState.isLoadingHistory
                             ? _buildLoadingState(context)
                             : chatState.isFirstDisplay &&
-                                    widget.emptyWidget != null
-                                ? widget.emptyWidget!
-                                : chatState.chatHistory.messages.isEmpty
-                                    ? _buildEmptyState(context)
-                                    : _buildChatList(context, chatState),
+                                  widget.emptyWidget != null
+                            ? widget.emptyWidget!
+                            : chatState.chatHistory.messages.isEmpty
+                            ? _buildEmptyState(context)
+                            : _buildChatList(context, chatState),
                       ),
                       // Hidden while streaming to avoid flicker; shown again
                       // based on scroll position once generation completes.
@@ -204,9 +199,8 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                           bottom: 8,
                           child: ValueListenableBuilder<bool>(
                             valueListenable: _isAtBottom,
-                            builder: (context, atBottom, child) => atBottom
-                                ? const SizedBox.shrink()
-                                : child!,
+                            builder: (context, atBottom, child) =>
+                                atBottom ? const SizedBox.shrink() : child!,
                             child: Center(
                               child: _buildScrollToBottomButton(context),
                             ),
@@ -278,11 +272,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           child: SizedBox(
             width: 36,
             height: 36,
-            child: Icon(
-              Icons.keyboard_arrow_down,
-              color: accent,
-              size: 22,
-            ),
+            child: Icon(Icons.keyboard_arrow_down, color: accent, size: 22),
           ),
         ),
       ),
@@ -314,17 +304,13 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.chat_bubble_outline,
-            size: 64,
-            color: customColor0,
-          ),
+          Icon(Icons.chat_bubble_outline, size: 64, color: customColor0),
           const SizedBox(height: 16),
           Text(
             context.l10n.startConversation,
-            style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  color: customColor0,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge!.copyWith(color: customColor0),
           ),
         ],
       ),
@@ -360,9 +346,9 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           const SizedBox(height: 16),
           Text(
             context.l10n.loadingConversation,
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: customColor0,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium!.copyWith(color: customColor0),
           ),
         ],
       ),
@@ -375,11 +361,7 @@ class LoadingDot extends StatefulWidget {
   final Color color;
   final Duration delay;
 
-  const LoadingDot({
-    super.key,
-    required this.color,
-    required this.delay,
-  });
+  const LoadingDot({super.key, required this.color, required this.delay});
 
   @override
   State<LoadingDot> createState() => _LoadingDotState();
@@ -398,12 +380,10 @@ class _LoadingDotState extends State<LoadingDot>
       duration: const Duration(milliseconds: 600),
     );
 
-    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeInOut,
-      ),
-    );
+    _animation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     Future.delayed(widget.delay, () {
       if (mounted) {

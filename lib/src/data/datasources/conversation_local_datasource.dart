@@ -34,12 +34,14 @@ class ConversationLocalDataSource {
 
     if (!exists) {
       final timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-      updatedHistory.add(jsonEncode({
-        'id': conversationId,
-        'name': name ?? 'Chat ${_formatTimestamp(timestamp)}',
-        'created_at': timestamp,
-        'updated_at': timestamp,
-      }));
+      updatedHistory.add(
+        jsonEncode({
+          'id': conversationId,
+          'name': name ?? 'Chat ${_formatTimestamp(timestamp)}',
+          'created_at': timestamp,
+          'updated_at': timestamp,
+        }),
+      );
     }
 
     await prefs.setStringList(key, updatedHistory);
@@ -51,8 +53,10 @@ class ConversationLocalDataSource {
     final history = prefs.getStringList(key) ?? [];
 
     return history
-        .map((item) =>
-            Conversation.fromMap(jsonDecode(item) as Map<String, dynamic>))
+        .map(
+          (item) =>
+              Conversation.fromMap(jsonDecode(item) as Map<String, dynamic>),
+        )
         .toList()
       ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
   }

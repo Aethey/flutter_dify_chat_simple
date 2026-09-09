@@ -41,10 +41,7 @@ void main() {
     expect(from(DioExceptionType.sendTimeout).code, 'SEND_TIMEOUT');
     expect(from(DioExceptionType.connectionError).code, 'CONNECTION_ERROR');
     expect(from(DioExceptionType.cancel).code, 'REQUEST_CANCELLED');
-    expect(
-      from(DioExceptionType.unknown).code,
-      'NETWORK_ERROR',
-    );
+    expect(from(DioExceptionType.unknown).code, 'NETWORK_ERROR');
   });
 
   test('parses JSON string and fallback error bodies', () {
@@ -104,8 +101,10 @@ void main() {
       const AppException(code: 'NETWORK_ERROR', message: 'down').toString(),
       'NETWORK_ERROR:down',
     );
-    expect(const AppException(code: 'CONNECTION_TIMEOUT').toString(),
-        'CONNECTION_TIMEOUT');
+    expect(
+      const AppException(code: 'CONNECTION_TIMEOUT').toString(),
+      'CONNECTION_TIMEOUT',
+    );
     expect(
       const AppException(code: 'CUSTOM', message: 'x').toString(),
       'CUSTOM:x',

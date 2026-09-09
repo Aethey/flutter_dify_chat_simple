@@ -33,10 +33,7 @@ class ChatInputSlot {
     this.action = ChatInputAction.none,
     this.custom = false,
     this.icon,
-  }) : assert(
-          !custom || icon != null,
-          'icon is required when custom is true',
-        );
+  }) : assert(!custom || icon != null, 'icon is required when custom is true');
 
   bool get isVisible => action != ChatInputAction.none;
 }

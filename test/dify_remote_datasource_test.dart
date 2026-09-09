@@ -12,7 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 DifyRemoteDataSource _source(
   void Function(RequestOptions options, RequestInterceptorHandler handler)
-      onRequest,
+  onRequest,
 ) {
   final dio = Dio(BaseOptions(baseUrl: 'https://example.test/v1'));
   dio.interceptors.add(InterceptorsWrapper(onRequest: onRequest));
@@ -46,9 +46,7 @@ void _resolveSse(
       requestOptions: options,
       statusCode: 200,
       data: ResponseBody(
-        Stream<Uint8List>.fromIterable([
-          Uint8List.fromList(utf8.encode(sse)),
-        ]),
+        Stream<Uint8List>.fromIterable([Uint8List.fromList(utf8.encode(sse))]),
         200,
         headers: {
           Headers.contentTypeHeader: ['text/event-stream'],
@@ -59,44 +57,43 @@ void _resolveSse(
 }
 
 void main() {
-  test('fetchConversationHistory reverses Dify rows into chat messages',
-      () async {
-    final source = _source((options, handler) {
-      expect(options.method, 'GET');
-      expect(options.path, '/messages');
-      expect(options.queryParameters['conversation_id'], 'c1');
-      expect(options.queryParameters['user'], 'user-1');
-      _resolveJson(
-        handler,
-        options,
-        statusCode: 200,
-        data: {
-          'data': [
-            {'query': 'second', 'answer': 'a2'},
-            {'query': '', 'answer': 'orphan'},
-            {'query': 'first', 'answer': 'a1'},
-          ],
-        },
+  test(
+    'fetchConversationHistory reverses Dify rows into chat messages',
+    () async {
+      final source = _source((options, handler) {
+        expect(options.method, 'GET');
+        expect(options.path, '/messages');
+        expect(options.queryParameters['conversation_id'], 'c1');
+        expect(options.queryParameters['user'], 'user-1');
+        _resolveJson(
+          handler,
+          options,
+          statusCode: 200,
+          data: {
+            'data': [
+              {'query': 'second', 'answer': 'a2'},
+              {'query': '', 'answer': 'orphan'},
+              {'query': 'first', 'answer': 'a1'},
+            ],
+          },
+        );
+      });
+
+      final messages = await source.fetchConversationHistory(
+        conversationId: 'c1',
+        userId: 'user-1',
       );
-    });
 
-    final messages = await source.fetchConversationHistory(
-      conversationId: 'c1',
-      userId: 'user-1',
-    );
-
-    expect(
-      messages.map((m) => '${m.role.name}:${m.content}').toList(),
-      [
+      expect(messages.map((m) => '${m.role.name}:${m.content}').toList(), [
         'user:first',
         'assistant:a1',
         'assistant:orphan',
         'user:second',
         'assistant:a2',
-      ],
-    );
-    expect(messages.last.status, MessageStatus.sent);
-  });
+      ]);
+      expect(messages.last.status, MessageStatus.sent);
+    },
+  );
 
   test('fetchConversationHistory wraps Dio errors', () async {
     final source = _source((options, handler) {
@@ -114,52 +111,50 @@ void main() {
         userId: 'user-1',
       ),
       throwsA(
-        isA<AppException>().having(
-          (e) => e.code,
-          'code',
-          'CONNECTION_TIMEOUT',
-        ),
+        isA<AppException>().having((e) => e.code, 'code', 'CONNECTION_TIMEOUT'),
       ),
     );
   });
 
-  test('streamChatMessage parses SSE and uses a fallback query for files',
-      () async {
-    Map<String, dynamic>? body;
-    const sse = '''
+  test(
+    'streamChatMessage parses SSE and uses a fallback query for files',
+    () async {
+      Map<String, dynamic>? body;
+      const sse = '''
 data: {"event":"message","conversation_id":"c1","answer":"Hi"}
 
 data: {"event":"message_end","conversation_id":"c1"}
 
 ''';
-    final source = _source((options, handler) {
-      expect(options.method, 'POST');
-      expect(options.path, '/chat-messages');
-      body = Map<String, dynamic>.from(options.data as Map);
-      _resolveSse(handler, options, sse);
-    });
+      final source = _source((options, handler) {
+        expect(options.method, 'POST');
+        expect(options.path, '/chat-messages');
+        body = Map<String, dynamic>.from(options.data as Map);
+        _resolveSse(handler, options, sse);
+      });
 
-    const image = ChatFileAttachment(
-      type: 'image',
-      transferMethod: 'local_file',
-      uploadFileId: 'file-1',
-    );
-    final chunks = await source
-        .streamChatMessage(
-          query: '  ',
-          userId: 'user-1',
-          conversationId: '',
-          files: const [image],
-        )
-        .toList();
+      const image = ChatFileAttachment(
+        type: 'image',
+        transferMethod: 'local_file',
+        uploadFileId: 'file-1',
+      );
+      final chunks = await source
+          .streamChatMessage(
+            query: '  ',
+            userId: 'user-1',
+            conversationId: '',
+            files: const [image],
+          )
+          .toList();
 
-    expect(body?['query'], difyFileOnlyQuery);
-    expect(body?.containsKey('conversation_id'), isFalse);
-    expect(body?['files'], isNotEmpty);
-    expect(chunks, isNotEmpty);
-    expect(chunks.last.message.content, 'Hi');
-    expect(chunks.last.conversationId, 'c1');
-  });
+      expect(body?['query'], difyFileOnlyQuery);
+      expect(body?.containsKey('conversation_id'), isFalse);
+      expect(body?['files'], isNotEmpty);
+      expect(chunks, isNotEmpty);
+      expect(chunks.last.message.content, 'Hi');
+      expect(chunks.last.conversationId, 'c1');
+    },
+  );
 
   test('streamChatMessage wraps Dio errors', () async {
     final source = _source((options, handler) {
@@ -174,11 +169,7 @@ data: {"event":"message_end","conversation_id":"c1"}
     expect(
       () => source.streamChatMessage(query: 'Hi', userId: 'user-1').toList(),
       throwsA(
-        isA<AppException>().having(
-          (e) => e.code,
-          'code',
-          'CONNECTION_ERROR',
-        ),
+        isA<AppException>().having((e) => e.code, 'code', 'CONNECTION_ERROR'),
       ),
     );
   });
@@ -233,12 +224,7 @@ data: {"event":"message_end","conversation_id":"c1"}
     final file = File('${dir.path}/photo.png')..writeAsBytesSync(const [1]);
 
     final source = _source((options, handler) {
-      _resolveJson(
-        handler,
-        options,
-        statusCode: 200,
-        data: {'id': 'abc'},
-      );
+      _resolveJson(handler, options, statusCode: 200, data: {'id': 'abc'});
     });
 
     final uploaded = await source.uploadFile(

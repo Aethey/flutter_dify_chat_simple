@@ -6,10 +6,7 @@ class TranscribeAudio {
 
   final AudioRepository _audioRepository;
 
-  Future<String> call({
-    required String filePath,
-    required String userId,
-  }) {
+  Future<String> call({required String filePath, required String userId}) {
     return _audioRepository.transcribe(filePath: filePath, userId: userId);
   }
 }

@@ -384,7 +384,11 @@ class _MessageInputState extends ConsumerState<MessageInput>
         final maxComposerH = constraints.hasBoundedHeight
             ? math.max(
                 _barH,
-                constraints.maxHeight - topPad - bottomPad - innerPad - attachmentH,
+                constraints.maxHeight -
+                    topPad -
+                    bottomPad -
+                    innerPad -
+                    attachmentH,
               )
             : double.infinity;
 
