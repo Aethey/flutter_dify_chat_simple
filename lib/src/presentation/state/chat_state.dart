@@ -16,6 +16,7 @@ enum ChatErrorType {
   connectionError,
   requestCancelled,
   serverError,
+  api,
   emptyAssistantReply,
 }
 
@@ -66,6 +67,10 @@ abstract class ChatState with _$ChatState {
       case ChatErrorType.network:
         final message = errorParams?['message'] ?? '';
         return context.l10n.networkError(message);
+      case ChatErrorType.api:
+        final code = errorParams?['code'] ?? '';
+        final message = errorParams?['message'] ?? '';
+        return context.l10n.apiError(code.toString(), message.toString());
       case ChatErrorType.generic:
         return context.l10n.genericError;
       case ChatErrorType.emptyAssistantReply:

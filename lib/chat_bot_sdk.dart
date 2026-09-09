@@ -19,17 +19,14 @@ class ChatBotSdk {
   ///
   /// [apiKey] - The API key for authenticating with Dify.ai
   /// [apiEndpoint] - Optional custom API endpoint (default: https://api.dify.ai/v1)
-  /// [appId] - Optional application ID (not required for API calls)
   static void initialize({
     required String apiKey,
     String apiEndpoint = 'https://api.dify.ai/v1',
-    String? appId,
   }) {
     debugPrint('Initializing ChatBotSdk with endpoint: $apiEndpoint');
     SdkConfig.instance.initialize(
       apiKey: apiKey,
       apiEndpoint: apiEndpoint,
-      appId: appId,
     );
   }
 

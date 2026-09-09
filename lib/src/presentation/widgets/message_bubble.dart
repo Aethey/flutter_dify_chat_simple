@@ -35,7 +35,7 @@ class MessageBubble extends StatelessWidget {
         padding: const EdgeInsets.all(12.0),
         decoration: isUser
             ? BoxDecoration(
-                color: Colors.grey[300],
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(16.0),
                 boxShadow: [
                   BoxShadow(
@@ -62,7 +62,10 @@ class MessageBubble extends StatelessWidget {
           if (message.content.isNotEmpty)
             Text(
               message.content,
-              style: const TextStyle(color: Colors.black, fontSize: 16),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+                fontSize: 16,
+              ),
             ),
         ],
       );
@@ -87,7 +90,10 @@ class MessageBubble extends StatelessWidget {
         children: [
           MarkdownBody(
             data: visible.isEmpty ? '_Thinking..._' : visible,
-            styleSheet: _styleSheet(context, Colors.black),
+            styleSheet: _styleSheet(
+              context,
+              Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
             onTapLink: (text, href, title) {
               if (href != null) {
                 _launchUrl(href);
@@ -191,9 +197,12 @@ class MessageBubble extends StatelessWidget {
   }
 
   Future<void> _launchUrl(String url) async {
-    final uri = Uri.parse(url);
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      throw Exception('Could not launch $url');
+    final uri = Uri.tryParse(url);
+    if (uri == null) return;
+    try {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      // Ignore: the link could not be opened (e.g. unsupported scheme).
     }
   }
 }

@@ -82,6 +82,11 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String apiError(String code, String message) {
+    return 'API 错误（$code）：$message';
+  }
+
+  @override
   String get logToday => '今天';
 
   @override

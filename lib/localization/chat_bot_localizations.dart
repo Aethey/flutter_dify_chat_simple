@@ -238,6 +238,12 @@ abstract class AppLocalizations {
   /// **'Server error (HTTP {statusCode}): {message}'**
   String serverError(String statusCode, String message);
 
+  /// No description provided for @apiError.
+  ///
+  /// In en, this message translates to:
+  /// **'API error ({code}): {message}'**
+  String apiError(String code, String message);
+
   /// No description provided for @logToday.
   ///
   /// In en, this message translates to:

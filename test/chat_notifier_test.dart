@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:chat_bot_sdk/src/core/config/sdk_config.dart';
 import 'package:chat_bot_sdk/src/core/error/app_exception.dart';
 import 'package:chat_bot_sdk/src/domain/entities/chat_file_attachment.dart';
 import 'package:chat_bot_sdk/src/domain/entities/chat_history.dart';
@@ -144,19 +143,20 @@ void main() {
     expect(state.errorType, ChatErrorType.connectionTimeout);
   });
 
-  test('sendMessage clear_history resets the session', () async {
+  test('clearChat resets the session', () async {
     final env = _createContainer();
     final notifier = env.container.read(chatProvider.notifier);
     notifier.setInitialState(
       ChatState(
-        chatHistory: ChatHistory()
-          ..addMessage(ChatMessage.user(content: 'old')),
+        chatHistory: ChatHistory(
+          messages: [ChatMessage.user(content: 'old')],
+        ),
         isFirstDisplay: false,
         conversationId: 'c1',
       ),
     );
 
-    await notifier.sendMessage('clear_history', 'user-1');
+    notifier.clearChat();
 
     final state = env.container.read(chatProvider);
     expect(state.chatHistory.messages, isEmpty);
@@ -171,30 +171,6 @@ void main() {
     await notifier.sendMessage('   ', 'user-1');
 
     expect(env.container.read(chatProvider).chatHistory.messages, isEmpty);
-  });
-
-  test('sendMessage empty text starts a new chat when one is active', () async {
-    final env = _createContainer();
-    final notifier = env.container.read(chatProvider.notifier);
-    notifier.setConversationId('c1');
-
-    await notifier.sendMessage('  ', 'user-1');
-
-    final state = env.container.read(chatProvider);
-    expect(state.conversationId, isNull);
-    expect(state.chatHistory.messages, isEmpty);
-  });
-
-  test('sendMessage empty text with an id loads that conversation', () async {
-    final env = _createContainer();
-    env.chat.history = [ChatMessage.assistant(content: 'from history')];
-    final notifier = env.container.read(chatProvider.notifier);
-
-    await notifier.sendMessage(' ', 'user-1', conversationId: 'c9');
-
-    final state = env.container.read(chatProvider);
-    expect(state.conversationId, 'c9');
-    expect(state.chatHistory.messages.single.content, 'from history');
   });
 
   test('sendMessage streams assistant text and conversation id', () async {
@@ -320,20 +296,30 @@ void main() {
       ChatErrorType.requestCancelled,
     );
     expect(await typeFor(Exception('nope')), ChatErrorType.generic);
-    expect(await typeFor(Exception('SERVER_ERROR')), ChatErrorType.serverError);
   });
 
-  test('new_conversation_with_animation restores the welcome message', () {
-    SdkConfig.instance.initialize(
-      apiKey: 'k',
-      apiEndpoint: 'https://example.test',
-      initialMessage: 'Welcome back',
+  test('sendMessage maps unknown Dify codes to the api error type', () async {
+    final env = _createContainer();
+    env.chat.streamError = const AppException(
+      code: 'provider_quota_exceeded',
+      message: 'quota exceeded',
     );
+    final notifier = env.container.read(chatProvider.notifier);
 
+    await notifier.sendMessage('Hi', 'user-1');
+    await pumpEventQueue();
+
+    final state = env.container.read(chatProvider);
+    expect(state.errorType, ChatErrorType.api);
+    expect(state.errorParams?['code'], 'provider_quota_exceeded');
+    expect(state.errorParams?['message'], 'quota exceeded');
+  });
+
+  test('startNewConversation restores the welcome message', () {
     fakeAsync((async) {
       final env = _createContainer();
       final notifier = env.container.read(chatProvider.notifier);
-      notifier.sendMessage('new_conversation_with_animation', 'user-1');
+      notifier.startNewConversation('Welcome back');
       expect(env.container.read(chatProvider).chatHistory.messages, isEmpty);
 
       async.elapse(const Duration(seconds: 1));

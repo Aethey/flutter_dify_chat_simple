@@ -14,7 +14,7 @@ class ChatHistory {
   final DateTime createdAt;
 
   /// Latest update timestamp
-  DateTime updatedAt;
+  final DateTime updatedAt;
 
   /// Constructor
   ChatHistory({
@@ -26,12 +26,6 @@ class ChatHistory {
        messages = messages ?? [],
        createdAt = createdAt ?? DateTime.now(),
        updatedAt = updatedAt ?? DateTime.now();
-
-  /// Add a new message to the conversation
-  void addMessage(ChatMessage message) {
-    messages.add(message);
-    updatedAt = DateTime.now();
-  }
 
   /// Get the most recent message in the conversation
   ChatMessage? get lastMessage {

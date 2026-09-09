@@ -16,6 +16,7 @@ class ConversationLocalDataSource {
     final prefs = await SharedPreferences.getInstance();
     final key = '$_keyPrefix$userId';
     final history = prefs.getStringList(key) ?? [];
+    final title = _cleanName(name);
 
     bool exists = false;
     final updatedHistory = history.map((item) {
@@ -24,7 +25,7 @@ class ConversationLocalDataSource {
         exists = true;
         return jsonEncode({
           'id': conversationId,
-          'name': name ?? conversation['name'] ?? 'Chat',
+          'name': title ?? conversation['name'] ?? 'Chat',
           'created_at': conversation['created_at'],
           'updated_at': DateTime.now().millisecondsSinceEpoch ~/ 1000,
         });
@@ -37,7 +38,7 @@ class ConversationLocalDataSource {
       updatedHistory.add(
         jsonEncode({
           'id': conversationId,
-          'name': name ?? 'Chat ${_formatTimestamp(timestamp)}',
+          'name': title ?? 'Chat ${_formatTimestamp(timestamp)}',
           'created_at': timestamp,
           'updated_at': timestamp,
         }),
@@ -75,6 +76,12 @@ class ConversationLocalDataSource {
     }).toList();
 
     await prefs.setStringList(key, updatedHistory);
+  }
+
+  String? _cleanName(String? name) {
+    if (name == null) return null;
+    final trimmed = name.trim();
+    return trimmed.isEmpty ? null : trimmed;
   }
 
   String _formatTimestamp(int timestamp) {

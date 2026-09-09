@@ -24,6 +24,7 @@
   "connectionError": "接続エラー: インターネット接続を確認してください",
   "requestCancelled": "リクエストがキャンセルされました",
   "serverError": "サーバーエラー (HTTP {statusCode}): {message}",
+  "apiError": "APIエラー ({code}): {message}",
   "logToday": "今日",
   "logYesterday": "昨日",
   "conversationHistory": "会話履歴",

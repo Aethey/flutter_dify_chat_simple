@@ -34,7 +34,6 @@ class SdkConfig {
   void initialize({
     required String apiKey,
     required String apiEndpoint,
-    String? appId,
     String? initialMessage,
   }) {
     _apiKey = apiKey;

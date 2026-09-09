@@ -87,6 +87,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String apiError(String code, String message) {
+    return 'API error ($code): $message';
+  }
+
+  @override
   String get logToday => 'Today';
 
   @override
