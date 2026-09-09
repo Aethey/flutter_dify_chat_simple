@@ -159,6 +159,11 @@ iOS `Info.plist`:
 - `NSCameraUsageDescription` (camera)
 - `NSPhotoLibraryUsageDescription` (gallery)
 
+Android `AndroidManifest.xml`:
+
+- Voice: `android.permission.RECORD_AUDIO` (merged from the `record` plugin; add it in the host app if it is missing)
+- Camera / gallery / files: no extra permission. `image_picker` uses the system Photo Picker / camera intent, `file_picker` uses Storage Access Framework
+
 </details>
 
 <details>
@@ -312,6 +317,11 @@ iOS `Info.plist`：
 - `NSCameraUsageDescription`（相机）
 - `NSPhotoLibraryUsageDescription`（相册）
 
+Android `AndroidManifest.xml`：
+
+- 语音：`android.permission.RECORD_AUDIO`（`record` 插件会合并进来；宿主里没有的话再补）
+- 相机 / 相册 / 文件：不用额外权限。`image_picker` 走系统 Photo Picker / 相机 Intent，`file_picker` 走 SAF
+
 </details>
 
 <details>
@@ -464,5 +474,10 @@ iOS `Info.plist`:
 - `NSMicrophoneUsageDescription`（音声）
 - `NSCameraUsageDescription`（カメラ）
 - `NSPhotoLibraryUsageDescription`（ギャラリー）
+
+Android `AndroidManifest.xml`:
+
+- 音声: `android.permission.RECORD_AUDIO`（`record` プラグインがマージする。無い場合はホスト側で追加）
+- カメラ / ギャラリー / ファイル: 追加権限は不要。`image_picker` は Photo Picker / カメラ Intent、`file_picker` は SAF を使う
 
 </details>

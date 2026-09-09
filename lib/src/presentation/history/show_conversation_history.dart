@@ -56,7 +56,9 @@ class _HistorySheetLoader extends StatefulWidget {
 }
 
 class _HistorySheetLoaderState extends State<_HistorySheetLoader> {
-  List<Conversation>? _conversations;
+  /// Single owner of the list; deletions update it via [_removeConversation],
+  /// so only the list body listening to it rebuilds.
+  ValueNotifier<List<Conversation>>? _conversations;
 
   @override
   void initState() {
@@ -64,12 +66,27 @@ class _HistorySheetLoaderState extends State<_HistorySheetLoader> {
     _load();
   }
 
+  @override
+  void dispose() {
+    _conversations?.dispose();
+    super.dispose();
+  }
+
   Future<void> _load() async {
     final conversations = await widget.loadConversations();
     if (!mounted) return;
+    // The only setState: swaps the loading box for the sheet content once.
     setState(() {
-      _conversations = conversations;
+      _conversations = ValueNotifier(conversations);
     });
+  }
+
+  void _removeConversation(String conversationId) {
+    final notifier = _conversations;
+    if (notifier == null) return;
+    notifier.value = notifier.value
+        .where((item) => item.id != conversationId)
+        .toList();
   }
 
   @override
@@ -100,6 +117,7 @@ class _HistorySheetLoaderState extends State<_HistorySheetLoader> {
               widget.onNewConversation!();
             },
       onDeleteConversation: widget.deleteConversation,
+      onConversationRemoved: _removeConversation,
     );
   }
 }
