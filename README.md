@@ -151,6 +151,14 @@ ChatBotSdk.showHistory(
 3. File attach: enable file upload on the app; vision/file understanding depends on the workflow
 4. Voice: Features → Speech to Text (use Whisper; Hosted OpenAI GPT-4 trial is not STT)
 
+## Example app
+
+```bash
+cp example/.env.example example/.env
+```
+
+Fill in your API key. Do not commit `.env`. CI copies the same template before `flutter analyze`.
+
 ## Host app permissions
 
 iOS `Info.plist`:
@@ -309,6 +317,14 @@ ChatBotSdk.showHistory(
 3. 发图/文件：在应用中开启文件上传；能否理解图片取决于工作流
 4. 语音：功能 → 语音转文字（使用 Whisper；Hosted OpenAI GPT-4 trial 不是 STT）
 
+## 示例应用
+
+```bash
+cp example/.env.example example/.env
+```
+
+填入 API Key。不要提交 `.env`。CI 在 `flutter analyze` 前会做同样的复制。
+
 ## 宿主应用权限
 
 iOS `Info.plist`：
@@ -466,6 +482,14 @@ ChatBotSdk.showHistory(
 2. API キーの取得: App → API Access → API Key をコピー
 3. 画像/ファイル: アプリでファイルアップロードを有効化。画像理解はワークフロー次第
 4. 音声: Features → Speech to Text（Whisper を使用。Hosted OpenAI GPT-4 trial は STT ではない）
+
+## サンプルアプリ
+
+```bash
+cp example/.env.example example/.env
+```
+
+API キーを記入する。`.env` はコミットしない。CI は `flutter analyze` の前に同じコピーを行う。
 
 ## ホストアプリの権限
 

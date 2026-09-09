@@ -6,7 +6,7 @@ Future<void> main() async {
   // Initialize Flutter binding
   WidgetsFlutterBinding.ensureInitialized();
 
-  await dotenv.load(fileName: '.env.example');
+  await dotenv.load(fileName: '.env');
 
   // Initialize SDK with environment variables
   ChatBotSdk.initialize(
