@@ -9,8 +9,8 @@ import 'package:chat_bot_sdk_example/main.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Future<void> _loadEnvAndInitSdk() async {
-  await dotenv.testLoad(
+void _loadEnvAndInitSdk() {
+  dotenv.testLoad(
     fileInput: 'DIFY_API_KEY=test-key\n'
         'DIFY_API_ENDPOINT=https://api.dify.ai/v1\n',
   );
@@ -22,7 +22,7 @@ Future<void> _loadEnvAndInitSdk() async {
 
 void main() {
   testWidgets('renders the demo home screen', (tester) async {
-    await _loadEnvAndInitSdk();
+    _loadEnvAndInitSdk();
 
     await tester.pumpWidget(const MyApp());
     await tester.pumpAndSettle();
@@ -34,7 +34,7 @@ void main() {
   });
 
   testWidgets('opens the chat page from the home screen', (tester) async {
-    await _loadEnvAndInitSdk();
+    _loadEnvAndInitSdk();
 
     await tester.pumpWidget(const MyApp());
     await tester.pumpAndSettle();
