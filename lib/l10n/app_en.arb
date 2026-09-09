@@ -28,6 +28,32 @@
   "conversationHistory": "Conversation History",
   "noConversationHistory": "No conversation history",
   "loadingConversation": "Loading conversation...",
+  "pickFromGallery": "Photo library",
+  "pickFromCamera": "Camera",
+  "attachImage": "Attach image",
+  "removeImage": "Remove image",
+  "voiceInput": "Voice input",
+  "recording": "Recording...",
+  "transcribing": "Transcribing...",
+  "microphonePermissionDenied": "Microphone permission is required for voice input.",
+  "imageUploadFailed": "Failed to upload image. Please try again.",
+  "uploadFile": "Upload file",
+  "fileUploadFailed": "Failed to upload file. Please try again.",
+  "speechToTextFailed": "Voice transcription failed: {message}",
+  "speechToTextDisabled": "Speech-to-text is disabled for this Dify app. Enable it in the app Features settings.",
+  "speechToTextModelUnsupported": "This Dify app's speech-to-text model cannot transcribe audio. Set Speech to Text to Whisper (or another STT model) in Dify. The hosted OpenAI GPT-4 trial cannot transcribe.",
+  "emptyAssistantReply": "No reply was returned. If you sent an image or file, include a short question and send again.",
+  "expandComposer": "Expand",
+  "collapseComposer": "Collapse",
+  "scrollToBottom": "Scroll to latest",
+  "@speechToTextFailed": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Speech to text is disabled."
+      }
+    }
+  },
   "@serverError": {
     "placeholders": {
       "statusCode": {

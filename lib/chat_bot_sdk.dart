@@ -1,12 +1,17 @@
-library chat_bot_sdk;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'l10n/app_localizations.dart';
-import 'src/chat/chat_page.dart';
-import 'src/config/sdk_config.dart';
-import 'src/services/conversation_service.dart';
+import 'src/core/config/sdk_config.dart';
+import 'src/data/datasources/conversation_local_datasource.dart';
+import 'src/data/repositories/conversation_repository_impl.dart';
+import 'src/domain/usecases/delete_conversation.dart';
+import 'src/domain/usecases/list_conversations.dart';
+import 'src/presentation/config/chat_input_bar_config.dart';
+import 'src/presentation/history/show_conversation_history.dart';
+import 'src/presentation/pages/chat_page.dart';
+
+export 'src/presentation/config/chat_input_bar_config.dart';
 
 /// Entry point for the Chat Bot SDK
 class ChatBotSdk {
@@ -29,35 +34,28 @@ class ChatBotSdk {
   }
 
   /// Start a chat session
-  ///
-  /// This launches the chat interface as a new screen
-  ///
-  /// [context] - BuildContext for navigation
-  /// [title] - Optional title for the chat page (default is localized 'Chat Assistant')
-  /// [initialMessage] - Optional initial bot message
-  /// [themeData] - Optional custom theme
-  /// [locale] - Optional locale for localization (defaults to system locale)
-  /// [thinkingWidget] - Optional custom widget to display when the bot is thinking (replaces default "_Thinking..._" text)
-  static Future<void> startChat(
-      {required BuildContext context,
-      String? title,
-      String? initialMessage,
-      ThemeData? themeData,
-      Locale? locale,
-      Widget? thinkingWidget,
-      Widget? emptyWidget,
-      required String userID,
-      String? conversationId}) async {
+  static Future<void> startChat({
+    required BuildContext context,
+    String? title,
+    String? initialMessage,
+    ThemeData? themeData,
+    Locale? locale,
+    Widget? thinkingWidget,
+    Widget? emptyWidget,
+    required String userID,
+    String? conversationId,
+    ChatInputBarConfig inputBarConfig = const ChatInputBarConfig(),
+  }) async {
     if (!SdkConfig.instance.isInitialized) {
       throw Exception(
-          'ChatBotSdk is not initialized. Call ChatBotSdk.initialize() first.');
+        'ChatBotSdk is not initialized. Call ChatBotSdk.initialize() first.',
+      );
     }
 
     if (initialMessage != null) {
       SdkConfig.instance.setInitialMessage(initialMessage);
     }
 
-    // launch the chat page
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ProviderScope(
@@ -75,6 +73,7 @@ class ChatBotSdk {
                   emptyWidget: emptyWidget,
                   userID: userID,
                   conversationId: conversationId,
+                  inputBarConfig: inputBarConfig,
                 ),
               ),
             ),
@@ -84,15 +83,52 @@ class ChatBotSdk {
     );
   }
 
+  /// Open conversation history from any host-app screen.
+  static Future<void> showHistory({
+    required BuildContext context,
+    required String userId,
+    ThemeData? themeData,
+    Locale? locale,
+    void Function(String conversationId)? onConversationSelected,
+    VoidCallback? onNewConversation,
+  }) {
+    final repository = _conversationRepository();
+    return showConversationHistory(
+      context: context,
+      themeData: themeData,
+      locale: locale,
+      loadConversations: () => ListConversations(repository)(userId),
+      deleteConversation: (conversationId) => DeleteConversation(repository)(
+        userId: userId,
+        conversationId: conversationId,
+      ),
+      onConversationSelected: onConversationSelected,
+      onNewConversation: onNewConversation,
+    );
+  }
+
   /// Get all conversations for a user
   static Future<List<Map<String, dynamic>>> getConversations(
-      String userId) async {
-    return await ConversationService.getConversations(userId);
+    String userId,
+  ) async {
+    final conversations = await ListConversations(_conversationRepository())(
+      userId,
+    );
+    return conversations.map((item) => item.toMap()).toList();
   }
 
   /// Delete a conversation
   static Future<void> deleteConversation(
-      String userId, String conversationId) async {
-    await ConversationService.deleteConversation(userId, conversationId);
+    String userId,
+    String conversationId,
+  ) async {
+    await DeleteConversation(_conversationRepository())(
+      userId: userId,
+      conversationId: conversationId,
+    );
+  }
+
+  static ConversationRepositoryImpl _conversationRepository() {
+    return ConversationRepositoryImpl(ConversationLocalDataSource());
   }
 }

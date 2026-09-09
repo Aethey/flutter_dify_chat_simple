@@ -63,7 +63,8 @@ import 'chat_bot_localizations_zh.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,7 +72,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -83,18 +85,19 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('ja'),
-    Locale('zh')
+    Locale('zh'),
   ];
 
   /// No description provided for @appTitle.
@@ -264,9 +267,118 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Loading conversation...'**
   String get loadingConversation;
+
+  /// No description provided for @pickFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo library'**
+  String get pickFromGallery;
+
+  /// No description provided for @pickFromCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get pickFromCamera;
+
+  /// No description provided for @attachImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach image'**
+  String get attachImage;
+
+  /// No description provided for @removeImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove image'**
+  String get removeImage;
+
+  /// No description provided for @voiceInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice input'**
+  String get voiceInput;
+
+  /// No description provided for @recording.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording...'**
+  String get recording;
+
+  /// No description provided for @transcribing.
+  ///
+  /// In en, this message translates to:
+  /// **'Transcribing...'**
+  String get transcribing;
+
+  /// No description provided for @microphonePermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone permission is required for voice input.'**
+  String get microphonePermissionDenied;
+
+  /// No description provided for @imageUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to upload image. Please try again.'**
+  String get imageUploadFailed;
+
+  /// No description provided for @uploadFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload file'**
+  String get uploadFile;
+
+  /// No description provided for @fileUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to upload file. Please try again.'**
+  String get fileUploadFailed;
+
+  /// No description provided for @speechToTextFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice transcription failed: {message}'**
+  String speechToTextFailed(String message);
+
+  /// No description provided for @speechToTextDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Speech-to-text is disabled for this Dify app. Enable it in the app Features settings.'**
+  String get speechToTextDisabled;
+
+  /// No description provided for @speechToTextModelUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This Dify app\'s speech-to-text model cannot transcribe audio. Set Speech to Text to Whisper (or another STT model) in Dify. The hosted OpenAI GPT-4 trial cannot transcribe.'**
+  String get speechToTextModelUnsupported;
+
+  /// No description provided for @emptyAssistantReply.
+  ///
+  /// In en, this message translates to:
+  /// **'No reply was returned. If you sent an image or file, include a short question and send again.'**
+  String get emptyAssistantReply;
+
+  /// No description provided for @expandComposer.
+  ///
+  /// In en, this message translates to:
+  /// **'Expand'**
+  String get expandComposer;
+
+  /// No description provided for @collapseComposer.
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse'**
+  String get collapseComposer;
+
+  /// No description provided for @scrollToBottom.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll to latest'**
+  String get scrollToBottom;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -275,26 +387,28 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'ja', 'zh'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'ja', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return AppLocalizationsEn();
-    case 'ja': return AppLocalizationsJa();
-    case 'zh': return AppLocalizationsZh();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'ja':
+      return AppLocalizationsJa();
+    case 'zh':
+      return AppLocalizationsZh();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

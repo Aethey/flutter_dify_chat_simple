@@ -95,4 +95,63 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get loadingConversation => '会話を読み込み中...';
+
+  @override
+  String get pickFromGallery => 'フォトライブラリ';
+
+  @override
+  String get pickFromCamera => 'カメラ';
+
+  @override
+  String get attachImage => '画像を添付';
+
+  @override
+  String get removeImage => '画像を削除';
+
+  @override
+  String get voiceInput => '音声入力';
+
+  @override
+  String get recording => '録音中...';
+
+  @override
+  String get transcribing => '文字起こし中...';
+
+  @override
+  String get microphonePermissionDenied => '音声入力にはマイクの許可が必要です。';
+
+  @override
+  String get imageUploadFailed => '画像のアップロードに失敗しました。もう一度お試しください。';
+
+  @override
+  String get uploadFile => 'ファイルをアップロード';
+
+  @override
+  String get fileUploadFailed => 'ファイルのアップロードに失敗しました。もう一度お試しください。';
+
+  @override
+  String speechToTextFailed(String message) {
+    return '音声認識に失敗しました: $message';
+  }
+
+  @override
+  String get speechToTextDisabled =>
+      'この Dify アプリでは Speech to Text が無効です。Features で有効にしてください。';
+
+  @override
+  String get speechToTextModelUnsupported =>
+      'この Dify アプリの音声認識モデルは文字起こしに対応していません。Speech to Text を Whisper などに変更してください（ホステッド GPT-4 トライアルでは転記できません）。';
+
+  @override
+  String get emptyAssistantReply =>
+      '返信がありませんでした。画像やファイルだけの場合は、短い質問を添えて再送信してください。';
+
+  @override
+  String get expandComposer => '拡大';
+
+  @override
+  String get collapseComposer => '縮小';
+
+  @override
+  String get scrollToBottom => '最新のメッセージへ';
 }

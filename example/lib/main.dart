@@ -204,8 +204,16 @@ class ChatDemoHome extends StatelessWidget {
                       ),
                     ),
                   ),
-                  
-                  // Add note
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: OutlinedButton.icon(
+                      onPressed: () => _openHistory(context),
+                      icon: const Icon(Icons.history),
+                      label: const Text('Conversation History'),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(top: 12),
                     child: Text(
@@ -252,9 +260,42 @@ class ChatDemoHome extends StatelessWidget {
       context: context,
       title: 'AI Assistant',
       initialMessage: 'Hello! I am an AI assistant. How can I help you today?',
-      themeData: Theme.of(context), // Use current theme
-      thinkingWidget: customThinkingWidget, userID: '1234567890', // Custom thinking widget
+      themeData: Theme.of(context),
+      thinkingWidget: customThinkingWidget,
+      userID: '1234567890',
       locale: const Locale('ja'),
+      inputBarConfig: ChatInputBarConfig(
+        slot1: ChatInputSlot(
+          action: ChatInputAction.history,
+          custom: true,
+          icon: Icon(
+            Icons.add,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+        slot2: const ChatInputSlot(action: ChatInputAction.image),
+        slot3: const ChatInputSlot(action: ChatInputAction.voice),
+      ),
+    );
+  }
+
+  void _openHistory(BuildContext context) {
+    ChatBotSdk.showHistory(
+      context: context,
+      userId: '1234567890',
+      themeData: Theme.of(context),
+      locale: const Locale('ja'),
+      onConversationSelected: (conversationId) {
+        ChatBotSdk.startChat(
+          context: context,
+          title: 'AI Assistant',
+          themeData: Theme.of(context),
+          userID: '1234567890',
+          conversationId: conversationId,
+          locale: const Locale('ja'),
+        );
+      },
+      onNewConversation: () => _startChat(context),
     );
   }
 } 
