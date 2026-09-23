@@ -64,7 +64,10 @@ void main() {
 
     final focused = tester.getRect(find.byType(TextField));
     final send = tester.getRect(find.byIcon(Icons.arrow_upward));
-    expect(tester.widget<TextField>(find.byType(TextField)).focusNode!.hasFocus, isTrue);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).focusNode!.hasFocus,
+      isTrue,
+    );
     expect(focused.left, lessThan(collapsed.left - 20));
     expect(focused.width, greaterThan(collapsed.width + 40));
     expect(focused.height, closeTo(44, 2));
