@@ -40,10 +40,9 @@ class ChatInputSlot {
 
 /// Layout of the three configurable input-bar buttons.
 ///
-/// Inactive: `slot1 | text field | slot2 | slot3 | send` (one row).
-/// Focused: one extra full-width text line above the same tool row.
-/// Longer text: field uses the previous expanded height, tools on a second row.
-/// Expand control (top-right) goes fullscreen; collapse returns to that height.
+/// Inactive: a floating pill with `slot1 | text field | slot2 | slot3 | send`.
+/// Focused: the text field moves above the tools and grows with its content.
+/// Beyond five lines, an expand control opens the full-height composer.
 class ChatInputBarConfig {
   final ChatInputSlot slot1;
   final ChatInputSlot slot2;

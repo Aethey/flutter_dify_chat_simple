@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:ui' show lerpDouble;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +16,7 @@ import '../state/chat_notifier.dart';
 import '../state/voice_notifier.dart';
 import '../state/voice_state.dart';
 
-/// ChatGPT-style composer with three configurable action slots.
+/// Floating composer with three configurable action slots.
 class MessageInput extends ConsumerStatefulWidget {
   final void Function(
     String message,
@@ -56,92 +55,36 @@ class MessageInput extends ConsumerStatefulWidget {
   ConsumerState<MessageInput> createState() => _MessageInputState();
 }
 
-class _MessageInputState extends ConsumerState<MessageInput>
-    with TickerProviderStateMixin {
-  static const _barH = 44.0;
+class _MessageInputState extends ConsumerState<MessageInput> {
+  static const _barH = 48.0;
   static const _slotW = 44.0;
   static const _sendW = 40.0;
-  static const _lineH = 22.0;
-
-  /// Focused, little text: one extra full-width line above the tool row.
-  static const _tier1FieldH = _lineH;
-
-  /// Previous stacked field height, used when the user types more.
-  static const _tier2FieldH = 96.0;
+  static const _lineH = 24.0;
+  static const _expandButtonThresholdLines = 5;
 
   final TextEditingController _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  final GlobalKey _textFieldKey = GlobalKey();
   final ImagePicker _imagePicker = ImagePicker();
-  late final AnimationController _expandController;
-  late final AnimationController _stackController;
-  late final Animation<double> _expand;
-  late final Animation<double> _stack;
   var _isFullscreen = false;
-  var _pinTier2 = false;
-  var _stackScheduled = false;
 
-  // Cached line measurement so tier-2 detection does not relayout on every
-  // rebuild while the text is unchanged.
+  // Line measurement controls only the expand icon, never the field height.
   String? _measuredText;
   double _measuredWidth = -1;
+  TextScaler? _measuredScaler;
   int _measuredLines = 0;
 
   @override
   void initState() {
     super.initState();
-    _expandController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 280),
-    );
-    _stackController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 320),
-    );
-    _expand = CurvedAnimation(
-      parent: _expandController,
-      curve: Curves.easeInOutCubic,
-      reverseCurve: Curves.easeInOutCubic,
-    );
-    _stack = CurvedAnimation(
-      parent: _stackController,
-      curve: Curves.easeInOutCubic,
-      reverseCurve: Curves.easeInOutCubic,
-    );
     _focusNode.addListener(_syncExpansion);
   }
 
   void _syncExpansion() {
     if (!mounted) return;
-    final active = _isComposerActive;
-    if (active) {
-      _expandController.forward();
-    } else {
-      _pinTier2 = false;
-      _expandController.reverse();
-      _stackController.reverse();
-    }
-  }
-
-  void _scheduleStack(bool wantStack) {
-    final shouldForward =
-        wantStack &&
-        _stackController.status != AnimationStatus.completed &&
-        _stackController.status != AnimationStatus.forward;
-    final shouldReverse =
-        !wantStack &&
-        !_isFullscreen &&
-        _stackController.status != AnimationStatus.dismissed &&
-        _stackController.status != AnimationStatus.reverse;
-    if (!shouldForward && !shouldReverse) return;
-    if (_stackScheduled) return;
-    _stackScheduled = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _stackScheduled = false;
-      if (!mounted) return;
-      if (shouldForward) {
-        _stackController.forward();
-      } else if (shouldReverse) {
-        _stackController.reverse();
+    setState(() {
+      if (!_focusNode.hasFocus && !ref.read(voiceProvider).isRecording) {
+        _isFullscreen = false;
       }
     });
   }
@@ -172,7 +115,6 @@ class _MessageInputState extends ConsumerState<MessageInput>
     );
     setState(() {
       _isFullscreen = false;
-      _pinTier2 = false;
     });
     _textController.clear();
     _focusNode.requestFocus();
@@ -359,8 +301,6 @@ class _MessageInputState extends ConsumerState<MessageInput>
   @override
   void dispose() {
     _focusNode.removeListener(_syncExpansion);
-    _expandController.dispose();
-    _stackController.dispose();
     _textController.dispose();
     _focusNode.dispose();
     super.dispose();
@@ -389,7 +329,7 @@ class _MessageInputState extends ConsumerState<MessageInput>
       builder: (context, constraints) {
         final bottomPad = MediaQuery.paddingOf(context).bottom + 8;
         const topPad = 8.0;
-        const innerPad = 16.0;
+        const innerPad = 10.0;
         final attachmentH = attachments.items.isEmpty ? 0.0 : 88.0;
         final maxComposerH = constraints.hasBoundedHeight
             ? math.max(
@@ -402,13 +342,28 @@ class _MessageInputState extends ConsumerState<MessageInput>
               )
             : double.infinity;
 
+        final colors = Theme.of(context).colorScheme;
+        final dark = Theme.of(context).brightness == Brightness.dark;
         return Padding(
           padding: EdgeInsets.fromLTRB(12, topPad, 12, bottomPad),
           child: Container(
-            padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+            key: const Key('chat_input_shell'),
+            padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(28),
+              color: dark
+                  ? const Color(0xFF242424)
+                  : colors.surfaceContainerHigh,
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(
+                color: colors.onSurface.withValues(alpha: dark ? 0.16 : 0.09),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: dark ? 0.2 : 0.1),
+                  blurRadius: 16,
+                  offset: const Offset(0, 5),
+                ),
+              ],
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -437,11 +392,6 @@ class _MessageInputState extends ConsumerState<MessageInput>
     String hintText, {
     required double maxComposerH,
   }) {
-    final slot1W = config.slot1.isVisible ? _slotW : 0.0;
-    final slot2W = config.slot2.isVisible ? _slotW : 0.0;
-    final slot3W = config.slot3.isVisible ? _slotW : 0.0;
-    const sendW = _sendW;
-    final rightW = slot2W + slot3W + sendW;
     final textStyle = TextStyle(
       color: Theme.of(context).colorScheme.onSurface,
       fontSize: 16,
@@ -451,142 +401,125 @@ class _MessageInputState extends ConsumerState<MessageInput>
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
-        final fullscreenFieldH = _fullscreenFieldHeight(
-          maxComposerH: maxComposerH,
-        );
-        return AnimatedBuilder(
-          animation: Listenable.merge([_expand, _stack]),
-          builder: (context, _) {
-            final t = _expand.value;
-            final s = _stack.value;
-            final collapsedFieldW = (width - slot1W - rightW).clamp(0.0, width);
-            final useTier2 = _shouldUseTier2(width, textStyle);
-            _scheduleStack(_isComposerActive && useTier2);
-            final extraH = lerpDouble(0, _tier1FieldH, t)!;
-            final inlineFieldH = lerpDouble(_barH, _tier1FieldH, t)!;
-            final stackedFieldH = _isFullscreen
-                ? fullscreenFieldH
-                : (maxComposerH.isFinite
-                      ? math.min(
-                          _tier2FieldH,
-                          math.max(0.0, maxComposerH - _barH),
-                        )
-                      : _tier2FieldH);
-            final fieldH = lerpDouble(inlineFieldH, stackedFieldH, s)!;
-            final totalH = lerpDouble(
-              _barH + extraH,
-              stackedFieldH + _barH,
-              s,
-            )!;
-            final fieldLeft = lerpDouble(lerpDouble(slot1W, 0, t)!, 0, s)!;
-            final fieldWidth = lerpDouble(
-              lerpDouble(collapsedFieldW, width, t)!,
-              width,
-              s,
-            )!;
-            final buttonY = lerpDouble(extraH, fieldH, s)!;
-            final showExpand = s > 0.7 && (useTier2 || _isFullscreen);
+        if (!_isComposerActive) {
+          return SizedBox(
+            height: _barH,
+            child: Row(
+              children: [
+                if (config.slot1.isVisible)
+                  SizedBox(
+                    width: _slotW,
+                    child: _buildSlot(config.slot1, voice),
+                  ),
+                Expanded(child: _buildTextField(hintText, active: false)),
+                if (config.slot2.isVisible)
+                  SizedBox(
+                    width: _slotW,
+                    child: _buildSlot(config.slot2, voice),
+                  ),
+                if (config.slot3.isVisible)
+                  SizedBox(
+                    width: _slotW,
+                    child: _buildSlot(config.slot3, voice),
+                  ),
+                SizedBox(
+                  width: _sendW,
+                  child: Center(child: _buildSendButton()),
+                ),
+              ],
+            ),
+          );
+        }
 
-            return SizedBox(
-              height: totalH,
-              width: width,
-              child: Stack(
-                clipBehavior: Clip.hardEdge,
-                children: [
-                  Positioned(
-                    left: fieldLeft,
-                    top: 0,
-                    width: fieldWidth,
-                    height: fieldH,
-                    child: _buildTextField(
-                      hintText,
-                      showExpand: showExpand,
-                      stacked: useTier2 || _isFullscreen,
-                    ),
-                  ),
-                  if (showExpand)
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      width: 36,
-                      height: 36,
-                      child: _buildExpandButton(),
-                    ),
-                  if (config.slot1.isVisible)
-                    Positioned(
-                      left: 0,
-                      top: buttonY,
-                      width: _slotW,
-                      height: _barH,
-                      child: _buildSlot(config.slot1, voice),
-                    ),
-                  if (config.slot2.isVisible)
-                    Positioned(
-                      right: sendW + slot3W,
-                      top: buttonY,
-                      width: _slotW,
-                      height: _barH,
-                      child: _buildSlot(config.slot2, voice),
-                    ),
-                  if (config.slot3.isVisible)
-                    Positioned(
-                      right: sendW,
-                      top: buttonY,
-                      width: _slotW,
-                      height: _barH,
-                      child: _buildSlot(config.slot3, voice),
-                    ),
-                  Positioned(
-                    right: 0,
-                    top: buttonY,
-                    width: sendW,
-                    height: _barH,
-                    child: Center(child: _buildSendButton()),
-                  ),
-                ],
+        final showExpand =
+            _measureLines(width, textStyle) > _expandButtonThresholdLines ||
+            _isFullscreen;
+        final field = Stack(
+          children: [
+            _buildTextField(hintText, active: true),
+            if (showExpand)
+              Positioned(
+                top: 0,
+                right: 0,
+                width: 36,
+                height: 36,
+                child: _buildExpandButton(),
               ),
-            );
-          },
+          ],
+        );
+        final toolbar = SizedBox(
+          height: _barH,
+          child: Row(
+            children: [
+              if (config.slot1.isVisible)
+                SizedBox(width: _slotW, child: _buildSlot(config.slot1, voice)),
+              const Spacer(),
+              if (config.slot2.isVisible)
+                SizedBox(width: _slotW, child: _buildSlot(config.slot2, voice)),
+              if (config.slot3.isVisible)
+                SizedBox(width: _slotW, child: _buildSlot(config.slot3, voice)),
+              SizedBox(
+                width: _sendW,
+                child: Center(child: _buildSendButton()),
+              ),
+            ],
+          ),
+        );
+
+        if (_isFullscreen) {
+          return SizedBox(
+            height: maxComposerH.isFinite ? maxComposerH : 400,
+            child: Column(
+              children: [
+                Expanded(child: field),
+                toolbar,
+              ],
+            ),
+          );
+        }
+        return ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: maxComposerH),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (maxComposerH.isFinite)
+                Flexible(fit: FlexFit.loose, child: field)
+              else
+                field,
+              toolbar,
+            ],
+          ),
         );
       },
     );
   }
 
-  double _fullscreenFieldHeight({required double maxComposerH}) {
-    if (!maxComposerH.isFinite) {
-      return _tier2FieldH;
-    }
-    return (maxComposerH - _barH).clamp(0.0, maxComposerH);
-  }
-
-  bool _shouldUseTier2(double composerWidth, TextStyle style) {
-    if (_isFullscreen || _pinTier2) return true;
-    if (!_isComposerActive) return false;
+  int _measureLines(double composerWidth, TextStyle style) {
     final text = _textController.text;
-    if (text.isEmpty) return false;
-    if (text.contains('\n')) return true;
-    final double maxWidth = math.max(8.0, composerWidth - 24);
-    if (text != _measuredText || maxWidth != _measuredWidth) {
+    if (text.isEmpty) return 1;
+    final scaler = MediaQuery.textScalerOf(context);
+    final maxWidth = math.max(8.0, composerWidth - 62);
+    if (text != _measuredText ||
+        maxWidth != _measuredWidth ||
+        scaler != _measuredScaler) {
       _measuredText = text;
       _measuredWidth = maxWidth;
+      _measuredScaler = scaler;
       final painter = TextPainter(
         text: TextSpan(text: text, style: style),
         textDirection: Directionality.of(context),
+        textScaler: scaler,
       )..layout(maxWidth: maxWidth);
-      _measuredLines = painter.computeLineMetrics().length;
+      _measuredLines =
+          painter.computeLineMetrics().length + (text.endsWith('\n') ? 1 : 0);
+      painter.dispose();
     }
-    return _measuredLines >= 2;
+    return math.max(1, _measuredLines);
   }
 
   void _toggleFullscreen() {
     setState(() {
-      if (_isFullscreen) {
-        _isFullscreen = false;
-        _pinTier2 = true;
-      } else {
-        _isFullscreen = true;
-        _pinTier2 = true;
-      }
+      _isFullscreen = !_isFullscreen;
     });
     _syncExpansion();
     if (_isFullscreen && !_focusNode.hasFocus) {
@@ -614,13 +547,8 @@ class _MessageInputState extends ConsumerState<MessageInput>
     );
   }
 
-  Widget _buildTextField(
-    String hintText, {
-    required bool showExpand,
-    required bool stacked,
-  }) {
+  Widget _buildTextField(String hintText, {required bool active}) {
     final voice = ref.watch(voiceProvider);
-    final active = _isComposerActive;
     final int? maxLines;
     final bool expands;
     if (_isFullscreen) {
@@ -629,55 +557,44 @@ class _MessageInputState extends ConsumerState<MessageInput>
     } else if (!active) {
       maxLines = 1;
       expands = false;
-    } else if (stacked) {
-      maxLines = 6;
-      expands = false;
     } else {
-      maxLines = 2;
+      maxLines = null;
       expands = false;
     }
 
-    final vPad = stacked ? 8.0 : (active ? 0.0 : 8.0);
+    final vPad = active ? 10.0 : 12.0;
 
-    return ClipRect(
-      child: TextField(
-        controller: _textController,
-        focusNode: _focusNode,
-        decoration: InputDecoration(
-          hintText: hintText,
-          border: InputBorder.none,
-          isDense: true,
-          contentPadding: EdgeInsets.fromLTRB(
-            12,
-            vPad,
-            showExpand ? 40 : 12,
-            vPad,
-          ),
-          hintStyle: TextStyle(
-            color: Theme.of(
-              context,
-            ).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
-          ),
+    return TextField(
+      key: _textFieldKey,
+      controller: _textController,
+      focusNode: _focusNode,
+      decoration: InputDecoration(
+        hintText: hintText,
+        border: InputBorder.none,
+        isDense: true,
+        contentPadding: EdgeInsets.fromLTRB(14, vPad, active ? 48 : 12, vPad),
+        hintStyle: TextStyle(
+          color: Theme.of(
+            context,
+          ).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
         ),
-        cursorColor: Theme.of(context).colorScheme.primary,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.onSurface,
-          fontSize: 16,
-          height: _lineH / 16,
-        ),
-        textAlignVertical: stacked
-            ? TextAlignVertical.top
-            : TextAlignVertical.center,
-        textCapitalization: TextCapitalization.sentences,
-        maxLines: maxLines,
-        minLines: expands ? null : 1,
-        expands: expands,
-        enabled: !_isBusy && !voice.isRecording && !voice.isTranscribing,
-        textInputAction: active
-            ? TextInputAction.newline
-            : TextInputAction.send,
-        onSubmitted: active ? null : (_) => _handleSendMessage(),
       ),
+      cursorColor: Theme.of(context).colorScheme.primary,
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.onSurface,
+        fontSize: 16,
+        height: _lineH / 16,
+      ),
+      textAlignVertical: active
+          ? TextAlignVertical.top
+          : TextAlignVertical.center,
+      textCapitalization: TextCapitalization.sentences,
+      maxLines: maxLines,
+      minLines: expands ? null : 1,
+      expands: expands,
+      enabled: !_isBusy && !voice.isRecording && !voice.isTranscribing,
+      textInputAction: active ? TextInputAction.newline : TextInputAction.send,
+      onSubmitted: active ? null : (_) => _handleSendMessage(),
     );
   }
 
